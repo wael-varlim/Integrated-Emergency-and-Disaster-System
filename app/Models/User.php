@@ -1,61 +1,84 @@
 <?php
+// app/Models/User.php
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-    use HasRoles;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    use HasFactory, Notifiable, HasRoles;
+
     protected $fillable = [
         'user_type',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Filament uses this for the login form & password validation.
      */
-    protected function casts(): array
+    public function getAuthPassword(): ?string
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->knownUser?->password;
     }
 
+    /**
+     * Filament displays the user's name in the top-right corner.
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->knownUser
+            ? $this->knownUser->first_name . ' ' . $this->knownUser->last_name
+            : 'Unknown';
+    }
 
+    /**
+     * Filament needs email for avatar, display, etc.
+     */
+    public function getEmailAttribute(): ?string
+    {
+        return $this->knownUser?->email;
+    }
 
+    /**
+     * Used by Filament to generate Gravatar / avatar fallback.
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return null;
+    }
 
+    // =========================================
+    // Filament Access Control
+    // =========================================
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole('admin','web');
+        }
 
+        return false;
+    }
+
+    // =========================================
+    // Relationships (unchanged)
+    // =========================================
 
     public function knownUser()
     {
         return $this->hasOne(KnownUser::class);
     }
-     
+
     public function anonymousUser()
     {
         return $this->hasOne(AnonymousUser::class);
