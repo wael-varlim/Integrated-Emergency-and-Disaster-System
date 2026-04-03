@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('body')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->foreignId('media_id')->constrained('media');
-            $table->foreignId('address_id')->constrained('adresses');
+            $table->foreignId('address_id')->constrained('addresses');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
