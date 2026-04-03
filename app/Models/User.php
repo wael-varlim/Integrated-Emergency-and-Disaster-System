@@ -14,6 +14,10 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasRoles;
 
+
+    // tells Spatie to check permissions on 'web' guard
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'user_type',
     ];
