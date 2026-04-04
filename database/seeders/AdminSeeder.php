@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        // ✅ FIX: Use 'web' guard (Spatie uses the model's default guard)
+        //  FIX: Use 'web' guard (Spatie uses the model's default guard)
         Role::firstOrCreate([
             'name' => 'admin',
             'guard_name' => 'web',
@@ -34,6 +34,6 @@ class AdminSeeder extends Seeder
 
         $user->assignRole('admin');
 
-        $this->command->info('✅ Admin created: admin@admin.com / password');
+        $this->command->info(' Admin created: admin@admin.com / password');
     }
 }

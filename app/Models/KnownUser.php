@@ -11,6 +11,7 @@ class KnownUser extends Model
 
 
     protected $fillable = [
+        'user_id',
         'national_number',
         'first_name',
         'last_name',

@@ -94,7 +94,7 @@ class PermissionSeeder extends Seeder
             Permission::where('name', 'like', 'view_%')->pluck('name')->toArray()
         );
 
-        $this->command->info('✅ Permissions and Roles seeded successfully!');
+        $this->command->info(' Permissions and Roles seeded successfully!');
         $this->command->table(
             ['Role', 'Permissions Count'],
             Role::all()->map(fn ($role) => [$role->name, $role->permissions->count()])

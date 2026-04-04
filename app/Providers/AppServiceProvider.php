@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    // ✅ Move to register() instead of boot()
+    //  Move to register() instead of boot()
     public function register(): void
     {
         Auth::provider('admin-provider', function ($app, array $config) {
