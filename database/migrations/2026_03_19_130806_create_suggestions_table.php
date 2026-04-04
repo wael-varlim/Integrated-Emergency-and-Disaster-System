@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('suggestions', function (Blueprint $table) {
             $table->id();
             $table->text('content')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->boolean('is_read_by_admin');
+            $table->boolean('is_read_by_admin')->default(false);
             $table->timestamps();
         });
     }

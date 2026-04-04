@@ -28,4 +28,10 @@ class Region extends Model
     {
         return $this->hasOne(City::class);
     }
+
+    public function getNameAttribute()
+    {
+        return $this->city->name;
+    }
+
 }

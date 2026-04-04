@@ -8,7 +8,7 @@ class Report extends Model
 {
     protected $fillable = [
         'location',
-        'news_id'
+        'news_id',
     ];
 
 

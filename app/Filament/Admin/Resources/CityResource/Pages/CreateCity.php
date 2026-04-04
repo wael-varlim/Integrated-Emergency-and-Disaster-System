@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Filament\Admin\Resources\CityResource\Pages;
+
+use App\Filament\Admin\Resources\CityResource;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateCity extends CreateRecord
+{
+    protected static string $resource = CityResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+}
