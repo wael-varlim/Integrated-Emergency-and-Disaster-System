@@ -8,8 +8,21 @@ use Illuminate\Support\Facades\Http;
 
 class testController extends Controller
 {
+
+    function randomFloat($min, $max) 
+    {
+        return $min + mt_rand() / mt_getrandmax() * ($max - $min);
+    }
+
+
     function mytest()
     {
+
+        //32.944, 35.876
+        //34.089, 37.095
+
+
+
         // $timeout=0;
         // do
         // {
@@ -18,20 +31,40 @@ class testController extends Controller
         // $timeout++;
         // //$address ? $address = Openstreetmap::reverse(33.511567, 36.306655) : true;
         // }while(!$address && $timeout<5);
+        $fullData='';
+        for ($i=0; $i < 40; $i++) { 
+    
+        
+            $response = Http::withOptions(['verify' => false])
+                ->withUserAgent('YourApp/1.0')
+                ->get('https://nominatim.openstreetmap.org/reverse', [
+                'format' => 'json',
+                'lat' => $this->randomFloat(32.944, 34.089),
+                'lon' => $this->randomFloat(34.089, 37.095),
+                'accept-language' => 'en'
+            ]);
 
+            $address = $response->json();
 
-        $response = Http::withOptions(['verify' => false])
-    ->withUserAgent('YourApp/1.0')
-    ->get('https://nominatim.openstreetmap.org/reverse', [
-        'format' => 'json',
-        'lat' => 33.50576,
-        'lon' => 36.32183,
-        'accept-language' => 'ar'
-    ]);
-    $address = $response->json();
+            if (!$address || !isset($address['display_name'])) 
+                {
+                    continue;
+                }
+            $address = json_decode($response->body(), false);
 
+            //dd($address);
+            $fullData =$fullData . ' @@@@ ' . $address->display_name;
 
-        dd($address);
-        //return $address ? $address->address->display_name : 'address not found';
+            sleep(1);
+        }
+
+        return $fullData;
+   
     }
+
+
+
+
+
+
 }
