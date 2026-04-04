@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->id();
             $table->text('media_url');
-            $table->foreignId('media_type_id')->constrained('media_types');
+            $table->morphs('model');
+            $table->foreignId('media_type_id')->constrained('media_types')->cascadeOnDelete();
             $table->timestamps();
         });
     }

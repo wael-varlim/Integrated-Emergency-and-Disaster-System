@@ -8,8 +8,6 @@ class News extends Model
 {
     protected $fillable = [
         'body',
-        'media_id',
-
         'user_id'
     ];
 
@@ -21,7 +19,7 @@ class News extends Model
 
     public function media()
     {
-        return $this->belongsTo(Media::class);
+        return $this->morphMany(Media::class, 'model');
     }
 
     public function address()

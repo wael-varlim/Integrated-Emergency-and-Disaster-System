@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id();
             $table->text('body')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->foreignId('media_id')->constrained('media');
             $table->foreignId('address_id')->constrained('addresses');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();

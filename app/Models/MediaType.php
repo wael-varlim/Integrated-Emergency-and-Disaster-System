@@ -17,8 +17,5 @@ class MediaType extends Model
         return $this->hasMany(Media::class);
     }
 
-    public function mediaTranslation()
-    {
-        return $this->hasMany(MediaType::class);
-    }
+
 }

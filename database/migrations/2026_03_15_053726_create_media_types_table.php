@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('media_types', function (Blueprint $table) {
             $table->id();
-            $table->string('type_name')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
+            $table->string('type_name'); 
             $table->timestamps();
         });
     }

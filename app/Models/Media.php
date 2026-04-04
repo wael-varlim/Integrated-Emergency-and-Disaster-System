@@ -14,9 +14,9 @@ class Media extends Model
 
 
 
-    public function news()
+    public function model()
     {
-        return $this->hasOne(News::class);
+        return $this->morphTo();
     }
 
     public function mediaType()
