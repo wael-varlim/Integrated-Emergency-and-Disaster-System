@@ -31,12 +31,12 @@ class News extends Model
 
     public function authority()
     {
-        return $this->belongsToMany(Authority::class);
+        return $this->belongsToMany(Authority::class, 'authorities_news');
     }
 
     public function newsType()
     {
-        return $this->belongsToMany(NewsType::class);
+        return $this->belongsToMany(NewsType::class, 'news_types_news');
     }
 
     public function post()

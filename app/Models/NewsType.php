@@ -13,7 +13,7 @@ class NewsType extends Model
 
     public function news()
     {
-        return $this->belongsToMany(News::class);
+        return $this->belongsToMany(News::class, 'news_types_news');
     }
 
     public function newsTranslation()

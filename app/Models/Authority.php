@@ -18,6 +18,6 @@ class Authority extends Model
 
     public function news()
     {
-        return $this->belongsToMany(News::class);
+        return $this->belongsToMany(News::class, 'authorities_news');
     }
 }
