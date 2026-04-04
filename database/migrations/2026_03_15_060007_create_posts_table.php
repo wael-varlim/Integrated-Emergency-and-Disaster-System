@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->string('owenr_role');
             $table->foreignId('news_id')->constrained('news')->cascadeOnDelete();
-            $table->foreignId('notification_id')->constrained('notifications');
+            $table->foreignId('notification_id')->nullable()->constrained('notifications');
             $table->timestamps();
         });
     }
