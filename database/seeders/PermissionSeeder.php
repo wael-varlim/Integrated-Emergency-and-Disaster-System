@@ -99,5 +99,11 @@ class PermissionSeeder extends Seeder
             ['Role', 'Permissions Count'],
             Role::all()->map(fn ($role) => [$role->name, $role->permissions->count()])
         );
+
+
+
+        // Mobile User Role 
+        $mobileUser = Role::firstOrCreate(['name' => 'mobile_user', 'guard_name' => 'web']);
+        // $normalUser->syncPermissions([]);
     }
 }
