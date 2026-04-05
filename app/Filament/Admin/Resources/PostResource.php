@@ -23,6 +23,9 @@ use App\Models\City;
 use App\Models\User;
 use App\Models\Region;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\Section as InfolistSection;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 
 class PostResource extends Resource
 {
@@ -30,6 +33,7 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Communication';
 
     public static function form(Form $form): Form
 {
@@ -90,7 +94,31 @@ class PostResource extends Resource
         ]);
 }
 
-    
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                InfolistSection::make('Post Details')
+                    ->schema([
+                        TextEntry::make('title'),
+                        TextEntry::make('owner_role'),
+                    ]),
+                InfolistSection::make('Information')
+                    ->schema([
+                        TextEntry::make('news.body')->label('News Body'),
+                        TextEntry::make('news.address.city.name')->label('City'),
+                        TextEntry::make('news.address.street')->label('Street'),
+                    ]),
+                InfolistSection::make('Notification Details')
+                    ->schema([
+                        TextEntry::make('notification.title')->label('Notification Title'),
+                        TextEntry::make('notification.body')->label('Notification Body'),
+                        TextEntry::make('notification.region.name')->label('Target Region'),
+                    ])
+                    ->visible(fn ($record) => $record->notification()->exists()),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -99,12 +127,15 @@ class PostResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('owner_role')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('news_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('notification_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('news.body')
+                ->label('body')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('news.address.city.name')
+                    ->label('City')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('news.address.street')
+                    ->label('Street')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -118,6 +149,7 @@ class PostResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

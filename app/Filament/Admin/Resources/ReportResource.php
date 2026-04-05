@@ -18,7 +18,7 @@ class ReportResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationGroup = 'News';
+    protected static ?string $navigationGroup = 'Communication';
 
     protected static ?int $navigationSort = 3;
 

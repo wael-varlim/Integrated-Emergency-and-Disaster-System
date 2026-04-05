@@ -49,7 +49,7 @@ class NotificationResource extends Resource
 
                         Forms\Components\Select::make('region_id')
                             ->label('Region')
-                            ->options(Region::all()->pluck('id', 'id'))
+                            ->options(Region::all()->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                     ])
@@ -69,7 +69,7 @@ class NotificationResource extends Resource
                     ->limit(50)
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('region_id')
+                Tables\Columns\TextColumn::make('region.name')
                     ->label('Region')
                     ->badge()
                     ->color('info'),
@@ -82,7 +82,7 @@ class NotificationResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('region_id')
                     ->label('Region')
-                    ->options(Region::all()->pluck('id', 'id')),
+                    ->options(Region::all()->pluck('name', 'id')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
