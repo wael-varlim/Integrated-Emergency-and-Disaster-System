@@ -25,7 +25,8 @@ class RoleResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasPermissionTo('manage_roles') ?? false;
+        return false;
+        // return auth()->user()?->hasPermissionTo('manage_roles') ?? false;
     }
 
     public static function form(Form $form): Form
