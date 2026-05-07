@@ -6,23 +6,52 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Traits\ApiResponseTrait;
+use App\Http\Requests\Auth\RegisterRequest;
+use PHPUnit\Framework\MockObject\Stub\ReturnStub;
 
 class AuthController extends Controller
 {
+    use ApiResponseTrait;
+
+
     public function __construct(protected AuthService $auth_service)
     {
         
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function verifyEmail(Request $request)
     {
-        $response = $this->auth_service->attemptLogin($request);
-
-        return $response;
+        $request->validate([
+            'email' => 'required|email:rfc,dns',
+        ]);
+    
+        return $this->auth_service->verifyEmail($request);
     }
 
-    public function logout()
+    public function verifyOtp(Request $request)
     {
-        return 'done ;)';
+        $request->validate([
+            'email' => 'required|email',
+            'otp'   => 'required|digits:6',
+        ]);
+
+        return $this->auth_service->verifyOtp($request);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        return $this->auth_service->attemptRegister($request);
+    }
+
+    public function login(LoginRequest $request): JsonResponse
+    {
+        return $this->auth_service->attemptLogin($request);
+    }
+
+    public function logout(Request $request)
+    {
+        return $this->auth_service->attemptLogout($request);
     }
 }

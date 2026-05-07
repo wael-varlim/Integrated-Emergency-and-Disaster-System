@@ -104,6 +104,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function region()
     {
-        return $this->belongsToMany(Region::class);
+        return $this->belongsToMany(Region::class, 'user_region_preferences');
     }
 }

@@ -15,9 +15,8 @@ class testController extends Controller
     }
 
 
-    function mytest()
+    function mytest(Request $request)
     {
-
         //32.944, 35.876
         //34.089, 37.095
 
@@ -31,6 +30,9 @@ class testController extends Controller
         // $timeout++;
         // //$address ? $address = Openstreetmap::reverse(33.511567, 36.306655) : true;
         // }while(!$address && $timeout<5);
+
+
+        //---------------------------------------------------------------------
         $fullData='';
         for ($i=0; $i < 40; $i++) { 
     

@@ -25,7 +25,8 @@ class AdminSeeder extends Seeder
 
         KnownUser::firstOrCreate([
             'user_id'         => $user->id,
-            'national_number' => '12345678901',
+            'official_identifier' => '12345678901',
+            'official_identifier_method' => 'passport',
             'first_name'      => 'Super',
             'last_name'       => 'Admin',
             'email'           => 'admin@admin.com',

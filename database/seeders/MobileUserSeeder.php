@@ -23,7 +23,8 @@ class MobileUserSeeder extends Seeder
             ['email' => 'user@test.com'],
             [
                 'user_id'         => $user->id,
-                'national_number' => '98765432101',
+                'official_identifier' => '98765432101',
+                'official_identifier_method' => 'national_id',
                 'first_name'      => 'Test',
                 'last_name'       => 'User',
                 'email'           => 'user@test.com',
