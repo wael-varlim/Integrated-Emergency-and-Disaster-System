@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('last_name', 15);
             $table->string('email')->unique();
             $table->string('password');
+            $table->boolean('is_verified')->default(false);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });

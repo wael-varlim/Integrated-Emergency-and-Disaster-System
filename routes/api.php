@@ -16,7 +16,7 @@ Route::get('/test', [testController::class, 'mytest']);
 
 
 
-Route::post('/verifyemail',   [AuthController::class, 'verifyEmail']);
+Route::post('/sendotp',   [AuthController::class, 'sendOtp']);
 Route::post('/verifyotp',   [AuthController::class, 'verifyOtp']);
 
 Route::post('/register',   [AuthController::class, 'register']);

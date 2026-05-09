@@ -29,6 +29,7 @@ class MobileUserSeeder extends Seeder
                 'last_name'       => 'User',
                 'email'           => 'user@test.com',
                 'password'        => Hash::make('password'),
+                'is_verified'     => true
             ]
         );
 

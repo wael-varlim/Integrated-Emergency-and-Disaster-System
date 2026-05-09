@@ -24,7 +24,7 @@ class RegisterRequest extends FormRequest
         return [
             'first_name'                  => 'required|string|max:255',
             'last_name'                   => 'required|string|max:255',
-            'email'                       => 'required|email',
+            'email'                       => 'required|email:rfc,dns',
             'official_identifier_method'  => 'required|string|in:passport,national_id',
             'official_identifier'         => 'required|string|unique:known_users,official_identifier',
             'address'                     => 'required|string',

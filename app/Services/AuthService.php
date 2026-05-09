@@ -21,7 +21,7 @@ class AuthService
     use ApiResponseTrait;
 
 
-    private function sendOtp(Request $request)
+    public function sendOtp(Request $request)
     {
         $otp = rand(100000, 999999);
 
@@ -34,26 +34,29 @@ class AuthService
 
     public function verifyOtp(Request $request)
     {
+        $knownUser =KnownUser::where('email', $request->email)->first();
+        if(! $knownUser)
+            return $this->apiResponse(null, 'there is no account that uses this email', 404);
+
+
         $stored = Cache::get("email_otp_{$request->email}");
         if ($stored != $request->otp)
             return $this->apiResponse(null, 'Incorrect code', 422);
-
-        Cache::forget("email_otp_{$request->email}");
+        $knownUser->unverified = true;
+        //Cache::forget("email_otp_{$request->email}");
         
-        return $this->apiResponse(null, 'verification done successfully', 200);
-    }
-
-    public function verifyEmail(Request $request)
-    {
-        if(KnownUser::where('email', $request->email)->first() != null)
-            return $this->apiResponse(null, 'this email is already used', 404);
-
-        return $this->sendOtp($request);
+        
+        $user = $knownUser->user;
+        $token = $user->createToken($request->device_name)->plainTextToken;
+        return $this->apiResponse(['token' => $token, 'user' => $knownUser], 'verification done successfully', 200);
     }
 
     public function attemptRegister(RegisterRequest $request)
     {
+        if(KnownUser::where('email', $request->email)->first() != null)
+            return $this->apiResponse(null, 'this email is already used', 404);
 
+        
         $city = City::where('name', $request->address)->firstOrFail();
         $regionId = $city->region_id;
 
@@ -64,8 +67,7 @@ class AuthService
 
         $user->region()->attach($regionId);
 
-        $knownUser  = KnownUser::create([
-            'user_id'                    => $user->id, 
+        $knownUser  = $user->knownUser()->create([
             'first_name'                 => $request->first_name,
             'last_name'                  => $request->last_name,
             'email'                      => $request->email,
@@ -74,16 +76,7 @@ class AuthService
             'official_identifier'        => $request->official_identifier,
         ]);
 
-
-
-        $token = $user->createToken($request->device_name)->plainTextToken;
-
-        return $this->apiResponse(['token' => $token, 'user' => $knownUser], 'Registered Successfully', 201);
-
-        // return $this->apiResponse([
-        //     'token' => $token,
-        //     'user'  => $user
-        // ], 'Registered successfully', 201);
+        return $this->apiResponse(null, 'account created successfully', 201);
     }
 
     public function attemptLogin(LoginRequest $request)
@@ -92,15 +85,17 @@ class AuthService
 
         if(! $knownUser || ! Hash::check($request->password, $knownUser->password))
             return $this->apiResponse(null, 'Invalid credentials', 401);
-
+        
         $user = $knownUser->user;
-
+        
         if(! $user->hasRole('mobile_user'))
             return $this->apiResponse(null, 'Unauthorized', 403);
+        
+        if(! $knownUser -> is_verified)
+            return $this->apiResponse(null, 'unverified account', 403);
 
         return $this->apiResponse($user->createToken($request->device_name)->plainTextToken, 'login Successfully', 200);
     }
-
 
     public function attemptLogout(Request $request)
     {

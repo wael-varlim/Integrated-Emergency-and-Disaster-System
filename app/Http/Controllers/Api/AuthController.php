@@ -21,20 +21,21 @@ class AuthController extends Controller
         
     }
 
-    public function verifyEmail(Request $request)
+    public function sendOtp(Request $request)
     {
         $request->validate([
             'email' => 'required|email:rfc,dns',
         ]);
     
-        return $this->auth_service->verifyEmail($request);
+        return $this->auth_service->sendOtp($request);
     }
 
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'otp'   => 'required|digits:6',
+            'email'         => 'required|email',
+            'otp'           => 'required|digits:6',
+            'device_name'   => 'required|string|max:255',
         ]);
 
         return $this->auth_service->verifyOtp($request);
