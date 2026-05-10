@@ -34,8 +34,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email'         => 'required|email',
-            'otp'           => 'required|digits:6',
-            'device_name'   => 'required|string|max:255',
+            'otp'           => 'required|digits:6'
         ]);
 
         return $this->auth_service->verifyOtp($request);

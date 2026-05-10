@@ -23,9 +23,13 @@ class AuthService
 
     public function sendOtp(Request $request)
     {
+        $knownUser =KnownUser::where('email', $request->email)->first();
+        if($knownUser->is_verified)
+            return $this->apiResponse(null, 'this email is already verified ', 409);
+
         $otp = rand(100000, 999999);
 
-        Cache::put("email_otp_{$request->email}", $otp, now()-> addMinute(10));
+        Cache::put("email_otp_{$request->email}", $otp, now()-> addMinutes(10));
 
         Mail::to($request->email)->send(new OtpMail($otp));
 
@@ -36,18 +40,23 @@ class AuthService
     {
         $knownUser =KnownUser::where('email', $request->email)->first();
         if(! $knownUser)
-            return $this->apiResponse(null, 'there is no account that uses this email', 404);
+            return $this->apiResponse(null, 'there is no account that uses this email', 409);
 
+        if($knownUser->is_verified)
+            return $this->apiResponse(null, 'this email is already verified ', 409);
 
         $stored = Cache::get("email_otp_{$request->email}");
         if ($stored != $request->otp)
             return $this->apiResponse(null, 'Incorrect code', 422);
-        $knownUser->unverified = true;
-        //Cache::forget("email_otp_{$request->email}");
-        
+
+        $knownUser->is_verified = true;
+        $knownUser->save();  
         
         $user = $knownUser->user;
-        $token = $user->createToken($request->device_name)->plainTextToken;
+        $token = $user->createToken('mobile_user')->plainTextToken;
+
+        Cache::forget("email_otp_{$request->email}");
+
         return $this->apiResponse(['token' => $token, 'user' => $knownUser], 'verification done successfully', 200);
     }
 
@@ -94,7 +103,7 @@ class AuthService
         if(! $knownUser -> is_verified)
             return $this->apiResponse(null, 'unverified account', 403);
 
-        return $this->apiResponse($user->createToken($request->device_name)->plainTextToken, 'login Successfully', 200);
+        return $this->apiResponse($user->createToken('mobile_user')->plainTextToken, 'login Successfully', 200);
     }
 
     public function attemptLogout(Request $request)

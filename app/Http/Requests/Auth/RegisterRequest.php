@@ -29,7 +29,6 @@ class RegisterRequest extends FormRequest
             'official_identifier'         => 'required|string|unique:known_users,official_identifier',
             'address'                     => 'required|string',
             'password'                    => 'required|string|min:8|confirmed',
-            'device_name'                 => 'required|string|max:255',
         ];
     }
 }

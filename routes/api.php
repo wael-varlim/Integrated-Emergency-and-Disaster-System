@@ -15,14 +15,24 @@ Route::get('/user', function (Request $request) {
 Route::get('/test', [testController::class, 'mytest']);
 
 
-
+//auth
 Route::post('/sendotp',   [AuthController::class, 'sendOtp']);
 Route::post('/verifyotp',   [AuthController::class, 'verifyOtp']);
-
 Route::post('/register',   [AuthController::class, 'register']);
 Route::post('/login',   [AuthController::class, 'login']);
-// Route::post('/refresh', [AuthController::class, 'refresh']);
 
-Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+
+//for the refresh token request
+// Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class])->group(function () {
+// });
+
+
+
+
+
+
+ 
