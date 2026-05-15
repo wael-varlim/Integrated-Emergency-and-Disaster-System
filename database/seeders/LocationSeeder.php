@@ -18,11 +18,22 @@ class LocationSeeder extends Seeder
                     'name' => 'Damascus',
                     'name_ar' => 'دمشق',
                     'cities' => [
-                        ['name' => 'Old Damascus',     'name_ar' => 'دمشق القديمة'],
-                        ['name' => 'Mezzeh',           'name_ar' => 'المزة'],
-                        ['name' => 'Kafr Sousa',       'name_ar' => 'كفر سوسة'],
-                        ['name' => 'Malki',            'name_ar' => 'المالكي'],
-                        ['name' => 'Bab Touma',        'name_ar' => 'باب توما'],
+                        ['name' => 'Kafr Sousa',     'name_ar' => 'كفرسوسة'],
+                        ['name' => 'Al-Mazza',           'name_ar' => 'المزة'],
+                        ['name' => 'As-Salihiya',       'name_ar' => 'الصالحية'],
+                        ['name' => 'Rukn ad-Din',            'name_ar' => 'ركن الدين'],
+                        ['name' => 'Al-Muhajerin',        'name_ar' => 'المهاجرين'],
+                        ['name' => 'Al-Midan',       'name_ar' => 'الميدان'],
+                        ['name' => 'Ash-Shaghour',       'name_ar' => 'الشاغور'],
+                        ['name' => 'Ancient City of Damascus',       'name_ar' => 'دمشق القديمة'],
+                        ['name' => 'Sarouja',       'name_ar' => 'ساروجة'],
+                        ['name' => 'Al-Qaboun',       'name_ar' => 'القابون'],
+                        ['name' => 'Barza',       'name_ar' => 'برزة'],
+                        ['name' => 'Dummar',       'name_ar' => 'دمر'],
+                        ['name' => 'Al-Qanawat',       'name_ar' => 'القنوات'],
+                        ['name' => 'Al-Yarmuk',       'name_ar' => 'اليرموك'],
+                        ['name' => 'Joubar',       'name_ar' => 'جوبر'],
+                        ['name' => 'Al-Qadam',       'name_ar' => 'القدم'],
                     ],
                 ],
                 [
@@ -173,37 +184,40 @@ class LocationSeeder extends Seeder
 
 
         foreach ($data['governorates'] as $govData) {
-            $region = Region::create([]);
+            $governorate = Governorate::firstOrCreate(
+                ['name' => $govData['name']]
+            );
 
-            // Create Governorate
-            $governorate = Governorate::create([
-                'name'      => $govData['name'],
-                'region_id' => $region->id,
-            ]);
+            // Only create a Region if not already linked
+            if (!$governorate->region_id) {
+                $region = Region::create([]);
+                $governorate->update(['region_id' => $region->id]);
+            }
 
             // Create Governorate Translation (Arabic)
-            $governorate->governorateTranslation()->create([
+            $governorate->governorateTranslation()->firstOrCreate([
                 'languahe_code' => 'ar',
                 'translation'   => $govData['name_ar'],
                 'governorate_id'=> $governorate->id,
             ]);
 
             // Create Governorate Translation (English)
-            $governorate->governorateTranslation()->create([
+            $governorate->governorateTranslation()->firstOrCreate([
                 'languahe_code' => 'en',
                 'translation'   => $govData['name'],
                 'governorate_id'=> $governorate->id,
             ]);
 
             foreach ($govData['cities'] as $cityData) {
-                $region = Region::create([]);
-
-                // Create City
-                $city = City::create([
-                    'name'           => $cityData['name'],
+                $city = City::firstOrCreate([
+                    'name' => $cityData['name'],
                     'governorate_id' => $governorate->id,
-                    'region_id'      => $region->id,
                 ]);
+
+                if (!$city->region_id) {
+                    $region = Region::create([]);
+                    $city->update(['region_id' => $region->id]);
+                }
 
                 // Create City Translation (Arabic)
                 $city->cityTranslation()->create([

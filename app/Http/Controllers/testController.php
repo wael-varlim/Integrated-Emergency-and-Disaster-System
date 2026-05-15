@@ -34,15 +34,15 @@ class testController extends Controller
 
         //---------------------------------------------------------------------
         $fullData='';
-        for ($i=0; $i < 40; $i++) { 
+        for ($i=0; $i < 2; $i++) { 
     
         
             $response = Http::withOptions(['verify' => false])
                 ->withUserAgent('YourApp/1.0')
                 ->get('https://nominatim.openstreetmap.org/reverse', [
                 'format' => 'json',
-                'lat' => $this->randomFloat(32.944, 34.089),
-                'lon' => $this->randomFloat(34.089, 37.095),
+                'lat' => $this->randomFloat(33.5150, 33.5151),
+                'lon' => $this->randomFloat(36.2850, 36.2851),
                 'accept-language' => 'en'
             ]);
 
@@ -61,6 +61,11 @@ class testController extends Controller
         }
 
         return $fullData;
+
+
+
+
+        
    
     }
 

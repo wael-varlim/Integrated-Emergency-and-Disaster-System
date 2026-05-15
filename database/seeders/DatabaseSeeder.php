@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
+            LocationSeeder::class,
             PermissionSeeder::class,
             AdminSeeder::class,
             MobileUserSeeder::class,
-            LocationSeeder::class
         ]);
 
     }
