@@ -10,7 +10,6 @@ class Post extends Model
         'title',
         'owner_role',
         'news_id',
-        'notification_id'
     ];
 
 
@@ -22,6 +21,6 @@ class Post extends Model
 
     public function notification()
     {
-        return $this->belongsTo(Notification::class);
+        return $this->hasOne(Notification::class);
     }
 }

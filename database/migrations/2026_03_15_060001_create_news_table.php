@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('body')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->foreignId('address_id')->constrained('addresses');
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('known_user_id')->constrained('known_users');
             $table->timestamps();
         });
     }

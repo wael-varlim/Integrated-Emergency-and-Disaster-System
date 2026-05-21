@@ -97,11 +97,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(FcmToken::class);
     }
 
-    public function news()
-    {
-        return $this->hasMany(News::class);
-    }
-
     public function region()
     {
         return $this->belongsToMany(Region::class, 'user_region_preferences');

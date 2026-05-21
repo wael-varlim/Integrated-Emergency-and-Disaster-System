@@ -9,14 +9,15 @@ class Notification extends Model
     protected $fillable = [
         'title',
         'body',
-        'region_id'
+        'region_id',
+        'post_id',
     ];
 
 
 
     public function post()
     {
-        return $this->hasOne(Post::class);
+        return $this->belongsTo(Post::class);
     }
 
     public function region()

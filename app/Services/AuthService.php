@@ -24,7 +24,10 @@ class AuthService
     public function sendOtp(Request $request)
     {
         $knownUser =KnownUser::where('email', $request->email)->first();
-        if($knownUser->is_verified)
+        if(! $knownUser)
+            return $this->apiResponse(null, 'Invalid credentials', 401);
+        
+        if($knownUser && $knownUser->is_verified)
             return $this->apiResponse(null, 'this email is already verified ', 409);
 
         $otp = rand(100000, 999999);

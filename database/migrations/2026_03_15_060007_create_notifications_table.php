@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->text('body')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
+            $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->foreignId('region_id')->constrained('regions');
             $table->timestamps();
         });
