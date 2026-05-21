@@ -184,40 +184,37 @@ class LocationSeeder extends Seeder
 
 
         foreach ($data['governorates'] as $govData) {
-            $governorate = Governorate::firstOrCreate(
-                ['name' => $govData['name']]
-            );
+            $region = Region::create([]);
 
-            // Only create a Region if not already linked
-            if (!$governorate->region_id) {
-                $region = Region::create([]);
-                $governorate->update(['region_id' => $region->id]);
-            }
+            // Create Governorate
+            $governorate = Governorate::create([
+                'name'      => $govData['name'],
+                'region_id' => $region->id,
+            ]);
 
             // Create Governorate Translation (Arabic)
-            $governorate->governorateTranslation()->firstOrCreate([
+            $governorate->governorateTranslation()->create([
                 'languahe_code' => 'ar',
                 'translation'   => $govData['name_ar'],
                 'governorate_id'=> $governorate->id,
             ]);
 
             // Create Governorate Translation (English)
-            $governorate->governorateTranslation()->firstOrCreate([
+            $governorate->governorateTranslation()->create([
                 'languahe_code' => 'en',
                 'translation'   => $govData['name'],
                 'governorate_id'=> $governorate->id,
             ]);
 
             foreach ($govData['cities'] as $cityData) {
-                $city = City::firstOrCreate([
-                    'name' => $cityData['name'],
-                    'governorate_id' => $governorate->id,
-                ]);
+                $region = Region::create([]);
 
-                if (!$city->region_id) {
-                    $region = Region::create([]);
-                    $city->update(['region_id' => $region->id]);
-                }
+                // Create City
+                $city = City::create([
+                    'name'           => $cityData['name'],
+                    'governorate_id' => $governorate->id,
+                    'region_id'      => $region->id,
+                ]);
 
                 // Create City Translation (Arabic)
                 $city->cityTranslation()->create([
