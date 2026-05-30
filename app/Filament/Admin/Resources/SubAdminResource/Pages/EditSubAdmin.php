@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\SubAdminResource\Pages;
 
-use App\Filament\Admin\Resources\SubAdminResource;
+use App\Filament\Admin\Resources\SubAdminResource\SubAdminResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -18,10 +18,11 @@ class EditSubAdmin extends EditRecord
         $knownUser = $this->record->knownUser;
 
         if ($knownUser) {
-            $data['first_name']      = $knownUser->first_name;
-            $data['last_name']       = $knownUser->last_name;
-            $data['national_number'] = $knownUser->national_number;
-            $data['email']           = $knownUser->email;
+            $data['first_name']                = $knownUser->first_name;
+            $data['last_name']                 = $knownUser->last_name;
+            $data['official_identifier']       = $knownUser->official_identifier;
+            $data['official_identifier_method'] = $knownUser->official_identifier_method;
+            $data['email']                     = $knownUser->email;
         }
 
         return $data;
@@ -31,10 +32,11 @@ class EditSubAdmin extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $knownUserData = [
-            'first_name'      => $data['first_name'],
-            'last_name'       => $data['last_name'],
-            'national_number' => $data['national_number'],
-            'email'           => $data['email'],
+            'first_name'                 => $data['first_name'],
+            'last_name'                  => $data['last_name'],
+            'official_identifier'        => $data['official_identifier'],
+            'official_identifier_method' => $data['official_identifier_method'],
+            'email'                      => $data['email'],
         ];
 
         if (! empty($data['password'])) {

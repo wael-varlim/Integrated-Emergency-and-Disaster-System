@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\AwarenessArticleResource\Pages;
 
-use App\Filament\Admin\Resources\AwarenessArticleResource;
+use App\Filament\Admin\Resources\AwarenessArticleResource\AwarenessArticleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

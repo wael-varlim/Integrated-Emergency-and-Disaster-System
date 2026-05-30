@@ -8,7 +8,9 @@ class Media extends Model
 {
     protected $fillable = [
         'media_url',
-        'media_type_id'
+        'media_type_id',
+        'model_type',
+        'model_id',
     ];
 
 

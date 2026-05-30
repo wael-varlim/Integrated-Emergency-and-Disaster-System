@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\ReportResource\Pages;
 
-use App\Filament\Admin\Resources\ReportResource;
+use App\Filament\Admin\Resources\ReportResource\ReportResource;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageReports extends ManageRecords

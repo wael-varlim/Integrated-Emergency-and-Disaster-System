@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\NotificationResource\Pages;
 
-use App\Filament\Admin\Resources\NotificationResource;
+use App\Filament\Admin\Resources\NotificationResource\NotificationResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

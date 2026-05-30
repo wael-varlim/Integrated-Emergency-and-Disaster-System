@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\SubAdminResource\Pages;
 
-use App\Filament\Admin\Resources\SubAdminResource;
+use App\Filament\Admin\Resources\SubAdminResource\SubAdminResource;
 use App\Models\KnownUser;
 use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
@@ -22,12 +22,13 @@ class CreateSubAdmin extends CreateRecord
 
         // 2. Now $user->id is available
         KnownUser::create([
-            'user_id'         => $user->id,  //  guaranteed to exist
-            'national_number' => $data['national_number'],
-            'first_name'      => $data['first_name'],
-            'last_name'       => $data['last_name'],
-            'email'           => $data['email'],
-            'password'        => Hash::make($data['password']),
+            'user_id'                   => $user->id,
+            'official_identifier'       => $data['official_identifier'],
+            'official_identifier_method' => $data['official_identifier_method'],
+            'first_name'                => $data['first_name'],
+            'last_name'                 => $data['last_name'],
+            'email'                     => $data['email'],
+            'password'                  => Hash::make($data['password']),
         ]);
 
         // 3. Assign roles

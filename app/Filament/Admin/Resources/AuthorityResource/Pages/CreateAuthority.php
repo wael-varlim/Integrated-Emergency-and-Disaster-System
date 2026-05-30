@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\AuthorityResource\Pages;
 
-use App\Filament\Admin\Resources\AuthorityResource;
+use App\Filament\Admin\Resources\AuthorityResource\AuthorityResource;
 use App\Models\Authority;
 use App\Models\AuthorityType;
 use Filament\Resources\Pages\CreateRecord;

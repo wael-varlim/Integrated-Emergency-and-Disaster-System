@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\CityResource\Pages;
 
-use App\Filament\Admin\Resources\CityResource;
+use App\Filament\Admin\Resources\CityResource\CityResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

@@ -23,9 +23,10 @@ class AdminSeeder extends Seeder
             'user_type' => 'Admin',
         ]);
 
-        KnownUser::firstOrCreate([
-            'user_id'         => $user->id,
+        KnownUser::updateOrCreate([
             'official_identifier' => '12345678901',
+        ], [
+            'user_id'         => $user->id,
             'official_identifier_method' => 'passport',
             'first_name'      => 'Super',
             'last_name'       => 'Admin',

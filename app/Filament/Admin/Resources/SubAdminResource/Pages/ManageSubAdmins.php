@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\SubAdminResource\Pages;
 
-use App\Filament\Admin\Resources\SubAdminResource;
+use App\Filament\Admin\Resources\SubAdminResource\SubAdminResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

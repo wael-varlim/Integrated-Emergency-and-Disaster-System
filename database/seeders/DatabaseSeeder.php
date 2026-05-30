@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             AdminSeeder::class,
             MobileUserSeeder::class,
+            MediaTypeSeeder::class,
+            NewsTypeSeeder::class,
+            PostSeeder::class,
         ]);
 
     }

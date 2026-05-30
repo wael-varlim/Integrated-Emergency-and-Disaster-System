@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Admin\Resources\PostResource\Pages;
-use App\Filament\Admin\Resources\PostResource;
+use App\Filament\Admin\Resources\PostResource\PostResource;
 use App\Models\News;
 use App\Models\Notification;
 use Filament\Actions;
@@ -30,7 +30,7 @@ class EditPost extends EditRecord
             }
         }
 
-        $notification = Notification::find($data['notification_id']);
+        $notification = $this->record->notification;
         if ($notification) {
             $data['create_notification'] = true;
             $data['notification_title'] = $notification->title;

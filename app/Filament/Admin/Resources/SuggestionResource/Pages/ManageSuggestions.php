@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\SuggestionResource\Pages;
 
-use App\Filament\Admin\Resources\SuggestionResource;
+use App\Filament\Admin\Resources\SuggestionResource\SuggestionResource;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageSuggestions extends ManageRecords

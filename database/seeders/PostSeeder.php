@@ -7,9 +7,7 @@ use App\Models\AddressTranslation;
 use App\Models\Authority;
 use App\Models\City;
 use App\Models\KnownUser;
-use App\Models\Media;
 use App\Models\News;
-use App\Models\News as ModelsNews;
 use App\Models\NewsType;
 use App\Models\Post;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -28,22 +26,11 @@ class PostSeeder extends Seeder
         $newsTypeIds    = NewsType::pluck('id')->toArray();
         $authorityIds   = Authority::pluck('id')->toArray();
 
-        // ── Media ──────────────────────────────────────────────────
-        $mediaTypeIds = [1, 2, 3]; // 1=image, 2=video, 3=audio — change if different
-
-        $mediaRecords = [];
-        for ($i = 1; $i <= 3; $i++) {
-            $mediaRecords[] = Media::create([
-                'url'           => "https://example.com/media/file{$i}.jpg", // change URLs
-                'media_type_id' => $mediaTypeIds[$i - 1],
-            ]);
-        }
-
         // ── Addresses ──────────────────────────────────────────────
         $addressData = [
-            ['street' => 'Street One',   'city_id' => $cityIds[0]],
-            ['street' => 'Street Two',   'city_id' => $cityIds[1]],
-            ['street' => 'Street Three', 'city_id' => $cityIds[2]],
+            ['street' => 'Street One',   'city_id' => $cityIds[0] ?? 1],
+            ['street' => 'Street Two',   'city_id' => $cityIds[1] ?? 1],
+            ['street' => 'Street Three', 'city_id' => $cityIds[2] ?? 1],
         ];
 
         $addressRecords = [];
@@ -52,16 +39,16 @@ class PostSeeder extends Seeder
 
             // English translation
             AddressTranslation::create([
-                'address_id' => $address->id,
-                'lang_code'  => 'en',
-                'name'       => $data['street'],
+                'address_id'    => $address->id,
+                'languahe_code' => 'en',
+                'translation'   => $data['street'],
             ]);
 
             // Arabic translation
             AddressTranslation::create([
-                'address_id' => $address->id,
-                'lang_code'  => 'ar',
-                'name'       => 'اسم العنوان', // change to real arabic name
+                'address_id'    => $address->id,
+                'languahe_code' => 'ar',
+                'translation'   => 'اسم العنوان',
             ]);
 
             $addressRecords[] = $address;
@@ -71,17 +58,20 @@ class PostSeeder extends Seeder
         $newsRecords = [];
         for ($i = 1; $i <= 3; $i++) {
             $news = News::create([
-                'body'       => "This is the body of news number {$i}.", // change
-                'media_id'   => $mediaRecords[$i - 1]->id,
+                'body'       => "This is the body of news number {$i}.",
                 'address_id' => $addressRecords[$i - 1]->id,
-                'known_user_id' => $knownUserIds[$i - 1],
+                'known_user_id' => $knownUserIds[($i - 1) % count($knownUserIds)],
             ]);
 
             // pivot: news_news_types
-            $news->newsTypes()->attach($newsTypeIds[$i - 1]);
+            if (isset($newsTypeIds[$i - 1])) {
+                $news->newsType()->attach($newsTypeIds[$i - 1]);
+            }
 
             // pivot: news_auth (authorities)
-            $news->authorities()->attach($authorityIds[$i - 1]);
+            if (isset($authorityIds[$i - 1])) {
+                $news->authority()->attach($authorityIds[$i - 1]);
+            }
 
             $newsRecords[] = $news;
         }
