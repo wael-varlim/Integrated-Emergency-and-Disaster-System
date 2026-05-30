@@ -6,38 +6,40 @@ use App\Filament\Admin\Resources\PostResource\Pages;
 use App\Filament\Admin\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Group;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Group;
 use App\Models\Address;
 use App\Models\City;
 use App\Models\User;
 use App\Models\Region;
 use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\Section as InfolistSection;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
+
 
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Communication';
+    protected static string|\UnitEnum|null $navigationGroup = 'Communication';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
 {
-    return $form
+    return $schema
         ->schema([
             Section::make('Post Details')
                 ->schema([
@@ -54,62 +56,68 @@ class PostResource extends Resource
                     Textarea::make('news_body')
                         ->required()
                         ->label('News Body')
-                        ->rows(5),
+                        ->rows(5)
+                        ->dehydrated(true),
 
-                    // Create new address inline
                     Select::make('city_id')
                         ->label('City')
                         ->options(City::all()->pluck('name', 'id'))
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        ->dehydrated(true),
                     TextInput::make('street')
                         ->label('Street')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->dehydrated(true),
                 ]),
 
             Section::make('Optional Notification')
                 ->schema([
                     Toggle::make('create_notification')
                         ->label('Create a notification for this post?')
-                        ->reactive()
-                        ->default(false),
+                        ->live()
+                        ->default(false)
+                        ->dehydrated(true),
                     Group::make()
                         ->schema([
                             TextInput::make('notification_title')
                                 ->label('Notification Title')
-                                ->required(),
+                                ->required()
+                                ->dehydrated(true),
                             Textarea::make('notification_body')
                                 ->label('Notification Body')
                                 ->required()
-                                ->rows(3),
+                                ->rows(3)
+                                ->dehydrated(true),
                             Select::make('region_id')
                                 ->label('Target Region')
                                 ->options(Region::all()->pluck('name', 'id'))
                                 ->searchable()
-                                ->required(),
+                                ->required()
+                                ->dehydrated(true),
                         ])
-                        ->visible(fn (callable $get) => $get('create_notification') === true),
+                        ->visible(fn (Get $get) => $get('create_notification') === true),
                 ]),
         ]);
 }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema([
-                InfolistSection::make('Post Details')
+                Section::make('Post Details')
                     ->schema([
                         TextEntry::make('title'),
                         TextEntry::make('owner_role'),
                     ]),
-                InfolistSection::make('Information')
+                Section::make('Information')
                     ->schema([
                         TextEntry::make('news.body')->label('News Body'),
                         TextEntry::make('news.address.city.name')->label('City'),
                         TextEntry::make('news.address.street')->label('Street'),
                     ]),
-                InfolistSection::make('Notification Details')
+                Section::make('Notification Details')
                     ->schema([
                         TextEntry::make('notification.title')->label('Notification Title'),
                         TextEntry::make('notification.body')->label('Notification Body'),
@@ -149,12 +157,12 @@ class PostResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

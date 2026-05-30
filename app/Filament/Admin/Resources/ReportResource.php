@@ -4,25 +4,28 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ReportResource\Pages;
 use App\Models\Report;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section as InfolistSection;
+use Filament\Infolists\Components\TextEntry;
+
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 
 class ReportResource extends Resource
 {
     protected static ?string $model = Report::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-flag';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationGroup = 'Communication';
+    protected static string|\UnitEnum|null $navigationGroup = 'Communication';
 
     protected static ?int $navigationSort = 3;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasAnyPermission([
             'view_any_report',
@@ -31,10 +34,10 @@ class ReportResource extends Resource
     }
 
     // No form needed - admin can only browse and delete
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-                Placeholder::make('news_body')
+        return $schema->schema([
+            Placeholder::make('news_body')
                 ->label('News Content')
                 ->content(fn (Report $record) => $record->news?->body ?? '—'),
 
@@ -44,7 +47,7 @@ class ReportResource extends Resource
 
             Placeholder::make('reported_by')
                 ->label('Reported By')
-                ->content(fn (Report $record) => 
+                ->content(fn (Report $record) =>
                     $record->news?->user?->knownUser
                         ? $record->news->user->knownUser->first_name . ' ' . $record->news->user->knownUser->last_name
                         : 'Anonymous'
@@ -58,6 +61,44 @@ class ReportResource extends Resource
                 ->label('Reported At')
                 ->content(fn (Report $record) => $record->created_at?->toDateTimeString() ?? '—'),
         ]);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                InfolistSection::make('Report Details')
+                    ->schema([
+                        TextEntry::make('news.body')
+                            ->label('News Content'),
+
+                        TextEntry::make('news.address.street')
+                            ->label('Address')
+                            ->placeholder('—'),
+
+                        TextEntry::make('news.user.knownUser.first_name')
+                            ->label('Reported By')
+                            ->formatStateUsing(fn ($record) =>
+                                $record->news?->user?->knownUser
+                                    ? $record->news->user->knownUser->first_name . ' ' . $record->news->user->knownUser->last_name
+                                    : 'Anonymous'
+                            ),
+
+                        TextEntry::make('created_at')
+                            ->label('Reported At')
+                            ->dateTime(),
+                    ])
+                    ->columns(2),
+
+                InfolistSection::make('Post Status')
+                    ->schema([
+                        TextEntry::make('news.post.id')
+                            ->label('Has Post')
+                            ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No')
+                            ->badge()
+                            ->color(fn ($record) => $record->news?->post ? 'success' : 'danger'),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -87,7 +128,6 @@ class ReportResource extends Resource
                             : 'Anonymous'
                     ),
 
-                // ✅ Has Post icon
                 Tables\Columns\IconColumn::make('news.post')
                     ->label('Has Post')
                     ->boolean()
@@ -104,28 +144,22 @@ class ReportResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                // Filter: only reports that have a post
                 Tables\Filters\Filter::make('has_post')
                     ->label('Has Post')
                     ->query(fn ($query) => $query->whereHas('news.post')),
 
-                // Filter: only reports that don't have a post
                 Tables\Filters\Filter::make('no_post')
                     ->label('No Post Yet')
                     ->query(fn ($query) => $query->whereDoesntHave('news.post')),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                ->mutateRecordDataUsing(function (array $data, Report $record): array {
-                    unset($data['location']);
-                    return $data;
-                }),
-                Tables\Actions\DeleteAction::make()
+                Actions\ViewAction::make(),
+                Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_report')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->hasPermissionTo('delete_report')),
                 ]),
             ]);

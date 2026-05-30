@@ -4,10 +4,13 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\RoleResource\Pages;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -15,25 +18,25 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $navigationGroup = 'Administration';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administration';
 
     protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return false;
         // return auth()->user()?->hasPermissionTo('manage_roles') ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Role Details')
+                SchemaComponents\Section::make('Role Details')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -46,7 +49,7 @@ class RoleResource extends Resource
                             ->default('web'),
                     ]),
 
-                Forms\Components\Section::make('Permissions')
+                SchemaComponents\Section::make('Permissions')
                     ->description('Select what this role can do')
                     ->schema(static::getPermissionSchema())
                     ->collapsible(),
@@ -81,7 +84,7 @@ class RoleResource extends Resource
         $sections = [];
 
         foreach ($grouped as $group => $perms) {
-            $sections[] = Forms\Components\Fieldset::make($group)
+            $sections[] = SchemaComponents\Fieldset::make($group)
                 ->schema([
                     Forms\Components\CheckboxList::make('permissions')
                         ->relationship('permissions', 'name')
@@ -133,17 +136,21 @@ class RoleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->before(function (Role $record) {
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make()
+                    ->before(function (Actions\DeleteAction $action, Role $record) {
                         if ($record->name === 'admin') {
-                            throw new \Exception('Cannot delete the admin role!');
+                            Notification::make()
+                                ->title('Cannot delete the admin role')
+                                ->danger()
+                                ->send();
+                            $action->cancel();
                         }
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

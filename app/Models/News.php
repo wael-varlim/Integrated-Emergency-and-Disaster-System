@@ -8,6 +8,7 @@ class News extends Model
 {
     protected $fillable = [
         'body',
+        'user_id',
         'known_user_id',
         'address_id'
     ];

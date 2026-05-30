@@ -6,22 +6,24 @@ use App\Filament\Admin\Resources\AwarenessArticleResource\Pages;
 use App\Models\AwarenessArticle;
 use App\Models\NewsType;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 
 class AwarenessArticleResource extends Resource
 {
     protected static ?string $model = AwarenessArticle::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-light-bulb';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-light-bulb';
 
-    protected static ?string $navigationGroup = 'Communication';
+    protected static string|\UnitEnum|null $navigationGroup = 'Communication';
 
     protected static ?int $navigationSort = 3;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasAnyPermission([
             'view_any_awareness_article', 'create_awareness_article',
@@ -29,11 +31,11 @@ class AwarenessArticleResource extends Resource
         ]) ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Article Details')
+                SchemaComponents\Section::make('Article Details')
                     ->schema([
                         Forms\Components\TextInput::make('title')
                             ->required()
@@ -97,15 +99,15 @@ class AwarenessArticleResource extends Resource
                     ->options(NewsType::all()->pluck('type_name', 'id')),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
+                Actions\ViewAction::make(),
+                Actions\EditAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('update_awareness_article')),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_awareness_article')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->hasPermissionTo('delete_awareness_article')),
                 ]),
             ]);

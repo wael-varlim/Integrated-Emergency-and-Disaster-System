@@ -6,22 +6,24 @@ use App\Filament\Admin\Resources\AuthorityResource\Pages;
 use App\Models\Authority;
 use App\Models\AuthorityType;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 
 class AuthorityResource extends Resource
 {
     protected static ?string $model = Authority::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
-    protected static ?string $navigationGroup = 'Authorities';
+    protected static string|\UnitEnum|null $navigationGroup = 'Authorities';
 
     protected static ?int $navigationSort = 1;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasAnyPermission([
             'view_any_authority',
@@ -31,20 +33,21 @@ class AuthorityResource extends Resource
         ]) ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Authority Name')
+                SchemaComponents\Section::make('Authority Name')
                     ->description('Enter the authority name in English and Arabic')
                     ->schema([
                         Forms\Components\TextInput::make('authorityType.type_name')
                             ->label('Name (English)')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->dehydrated(true),
                     ]),
 
-                Forms\Components\Section::make('Translations')
+                SchemaComponents\Section::make('Translations')
                     ->description('Add translations for this authority')
                     ->schema([
                         Forms\Components\Repeater::make('authorityType.authorityTranslation')
@@ -67,6 +70,7 @@ class AuthorityResource extends Resource
                             ->columns(2)
                             ->addActionLabel('Add Translation')
                             ->maxItems(2)
+                            ->dehydrated(true)
                             ->default([
                                 ['languahe_code' => 'en', 'translation' => ''],
                                 ['languahe_code' => 'ar', 'translation' => ''],
@@ -111,14 +115,14 @@ class AuthorityResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('update_authority')),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_authority')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->hasPermissionTo('delete_authority')),
                 ]),
             ]);

@@ -6,22 +6,24 @@ use App\Filament\Admin\Resources\NotificationResource\Pages;
 use App\Models\Notification;
 use App\Models\Region;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 
 class NotificationResource extends Resource
 {
     protected static ?string $model = Notification::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-bell';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bell';
 
-    protected static ?string $navigationGroup = 'Communication';
+    protected static string|\UnitEnum|null $navigationGroup = 'Communication';
 
     protected static ?int $navigationSort = 1;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasAnyPermission([
             'view_any_notification', 'create_notification',
@@ -29,11 +31,11 @@ class NotificationResource extends Resource
         ]) ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make()
+                SchemaComponents\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('title')
                             ->required()
@@ -85,15 +87,15 @@ class NotificationResource extends Resource
                     ->options(Region::all()->pluck('name', 'id')),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
+                Actions\ViewAction::make(),
+                Actions\EditAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('update_notification')),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_notification')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->hasPermissionTo('delete_notification')),
                 ]),
             ]);

@@ -6,10 +6,12 @@ use App\Filament\Admin\Resources\SubAdminResource\Pages;
 use App\Models\KnownUser;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -18,9 +20,9 @@ class SubAdminResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Administration';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administration';
 
     protected static ?string $navigationLabel = 'Sub Admins';
 
@@ -30,7 +32,7 @@ class SubAdminResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasPermissionTo('manage_sub_admins') ?? false;
     }
@@ -43,35 +45,39 @@ class SubAdminResource extends Resource
             ->where('id', '!=', auth()->id());
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Personal Information')
+                SchemaComponents\Section::make('Personal Information')
                     ->schema([
                         Forms\Components\TextInput::make('first_name')
                             ->required()
                             ->maxLength(15)
+                            ->dehydrated(true)
                             ->label('First Name'),
 
                         Forms\Components\TextInput::make('last_name')
                             ->required()
                             ->maxLength(15)
+                            ->dehydrated(true)
                             ->label('Last Name'),
 
                         Forms\Components\TextInput::make('national_number')
                             ->required()
                             ->maxLength(11)
+                            ->dehydrated(true)
                             ->label('National Number'),
 
                         Forms\Components\TextInput::make('email')
                             ->email()
                             ->required()
+                            ->dehydrated(true)
                             ->label('Email'),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Security')
+                SchemaComponents\Section::make('Security')
                     ->schema([
                         Forms\Components\TextInput::make('password')
                             ->password()
@@ -94,7 +100,7 @@ class SubAdminResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Roles & Access')
+                SchemaComponents\Section::make('Roles & Access')
                     ->schema([
                         Forms\Components\CheckboxList::make('roles')
                             ->relationship('roles', 'name')
@@ -163,7 +169,7 @@ class SubAdminResource extends Resource
                     ->preload(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         // Remove password if empty on edit
                         if (empty($data['password'])) {
@@ -171,14 +177,14 @@ class SubAdminResource extends Resource
                         }
                         return $data;
                     }),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->after(function (User $record) {
                         $record->knownUser?->delete();
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

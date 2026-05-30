@@ -7,33 +7,36 @@ use App\Models\City;
 use App\Models\Governorate;
 use App\Models\Region;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 
 class CityResource extends Resource
 {
     protected static ?string $model = City::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Locations';
+    protected static string|\UnitEnum|null $navigationGroup = 'Locations';
 
     protected static ?int $navigationSort = 3;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasAnyPermission([
             'view_any_city', 'create_city', 'update_city', 'delete_city',
         ]) ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make()
+                SchemaComponents\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -45,18 +48,18 @@ class CityResource extends Resource
                             ->options(Region::all()->pluck('id', 'id'))
                             ->searchable()
                             ->required()
-                            ->reactive(),
+                            ->live(),
 
                         Forms\Components\Select::make('governorate_id')
                             ->label('Governorate')
-                            ->options(fn ($get) => Governorate::where('region_id', $get('region_id'))
+                            ->options(fn (Get $get) => Governorate::where('region_id', $get('region_id'))
                                 ->pluck('name', 'id'))
                             ->searchable()
                             ->required(),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Translations')
+                SchemaComponents\Section::make('Translations')
                     ->schema([
                         Forms\Components\Repeater::make('cityTranslation')
                             ->relationship()
@@ -109,14 +112,14 @@ class CityResource extends Resource
                     ->options(Governorate::all()->pluck('name', 'id')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('update_city')),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_city')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->hasPermissionTo('delete_city')),
                 ]),
             ]);

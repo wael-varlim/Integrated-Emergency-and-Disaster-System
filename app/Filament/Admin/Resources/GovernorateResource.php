@@ -6,33 +6,35 @@ use App\Filament\Admin\Resources\GovernorateResource\Pages;
 use App\Models\Governorate;
 use App\Models\Region;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 
 class GovernorateResource extends Resource
 {
     protected static ?string $model = Governorate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-library';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-library';
 
-    protected static ?string $navigationGroup = 'Locations';
+    protected static string|\UnitEnum|null $navigationGroup = 'Locations';
 
     protected static ?int $navigationSort = 2;
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
         return auth()->user()?->hasAnyPermission([
             'view_any_governorate', 'create_governorate', 'update_governorate', 'delete_governorate',
         ]) ?? false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make()
+                SchemaComponents\Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -47,7 +49,7 @@ class GovernorateResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Translations')
+                SchemaComponents\Section::make('Translations')
                     ->schema([
                         Forms\Components\Repeater::make('governorateTranslation')
                             ->relationship()
@@ -101,14 +103,14 @@ class GovernorateResource extends Resource
                     ->options(Region::all()->pluck('id', 'id')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                Actions\EditAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('update_governorate')),
-                Tables\Actions\DeleteAction::make()
+                Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_governorate')),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()?->hasPermissionTo('delete_governorate')),
                 ]),
             ]);
