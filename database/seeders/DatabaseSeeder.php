@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             MediaTypeSeeder::class,
             NewsTypeSeeder::class,
             PostSeeder::class,
+            DemoDataSeeder::class,
         ]);
 
     }
