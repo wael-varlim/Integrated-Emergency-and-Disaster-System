@@ -92,18 +92,18 @@ class DemoDataSeeder extends Seeder
             ]);
             AddressTranslation::create([
                 'address_id'    => $address->id,
-                'languahe_code' => 'en',
+                'language_code' => 'en',
                 'translation'   => $street,
             ]);
             AddressTranslation::create([
                 'address_id'    => $address->id,
-                'languahe_code' => 'ar',
+                'language_code' => 'ar',
                 'translation'   => 'شارع ' . $street,
             ]);
             $addresses[] = $address;
         }
 
-        $this->command->info('✓ 20 addresses created');
+        $this->command->info('20 addresses created');
 
         // ─────────── 3. Create 1 extra authority type for variety ───────────
         if (Authority::count() < 3) {
@@ -112,12 +112,12 @@ class DemoDataSeeder extends Seeder
                 $at = AuthorityType::create(['type_name' => $typeName]);
                 AuthorityTranslation::create([
                     'authority_type_id' => $at->id,
-                    'languahe_code'     => 'en',
+                    'language_code'     => 'en',
                     'translation'       => $typeName,
                 ]);
                 AuthorityTranslation::create([
                     'authority_type_id' => $at->id,
-                    'languahe_code'     => 'ar',
+                    'language_code'     => 'ar',
                     'translation'       => $typeName,
                 ]);
                 Authority::create(['authority_type_id' => $at->id]);
@@ -125,7 +125,7 @@ class DemoDataSeeder extends Seeder
             $authorities = Authority::all();
         }
 
-        $this->command->info('✓ Authorities created');
+        $this->command->info('Authorities created');
 
         // ─────────── 4. Create 18 news items ───────────
         $newsBodies = [
@@ -157,6 +157,10 @@ class DemoDataSeeder extends Seeder
                 'known_user_id' => $users[$i % count($users)]->id,
             ]);
 
+            $news->media()->create([
+                'media_url' => "images/image{$i}.jpg",
+                'media_type_id' => rand(1,3)
+            ]);
             $type = $newsTypes[$i % $newsTypes->count()];
             $news->newsType()->attach($type->id);
 
@@ -167,7 +171,7 @@ class DemoDataSeeder extends Seeder
             $newsRecords[] = $news;
         }
 
-        $this->command->info('✓ 18 news items created');
+        $this->command->info('18 news items created');
 
         // ─────────── 5. Create posts with notifications ───────────
         $ownerRoles = ['admin', 'news_manager', 'content_manager'];
@@ -192,7 +196,7 @@ class DemoDataSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ Posts + notifications created');
+        $this->command->info('Posts + notifications created');
 
         // ─────────── 6. Create 20 reports spread across months ───────────
         $damascusCityIds = City::whereHas('governorate', function ($q) {
@@ -218,7 +222,7 @@ class DemoDataSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ 20 reports created across different months');
+        $this->command->info('20 reports created across different months');
 
         // ─────────── 7. Create 6 awareness articles ───────────
         $articleData = [
@@ -244,7 +248,7 @@ class DemoDataSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ 6 awareness articles created');
+        $this->command->info('6 awareness articles created');
 
         // ─────────── 8. Create 8 suggestions ───────────
         $suggestionTexts = [
@@ -265,9 +269,9 @@ class DemoDataSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ 8 suggestions created');
+        $this->command->info('8 suggestions created');
 
         $this->command->newLine();
-        $this->command->info('✅ Demo data seeded successfully!');
+        $this->command->info('Demo data seeded successfully!');
     }
 }

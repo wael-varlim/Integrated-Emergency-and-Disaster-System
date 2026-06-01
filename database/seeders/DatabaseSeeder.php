@@ -20,10 +20,12 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
             PermissionSeeder::class,
             AdminSeeder::class,
+            AuthorityTypeSeeder::class,
+            AuthoritySeeder::class,
             MobileUserSeeder::class,
             MediaTypeSeeder::class,
             NewsTypeSeeder::class,
-            PostSeeder::class,
+            //PostSeeder::class,
             DemoDataSeeder::class,
         ]);
 

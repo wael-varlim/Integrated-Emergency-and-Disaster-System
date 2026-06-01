@@ -9,11 +9,11 @@ class AuthorityTranslation extends Model
     protected $fillable = [
         'languahe_code',
         'translation',
-        'authority_type_id'
+        'authority_id'
     ];
 
     public function authorityType()
     {
-        return $this->belongsTo(AuthorityType::class);
+        return $this->belongsTo(Authority::class);
     }
 }

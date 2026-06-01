@@ -16,6 +16,11 @@ class Authority extends Model
         return $this->belongsTo(AuthorityType::class);
     }
 
+    public function authorityTranslation()
+    {
+        return $this->hasMany(AuthorityTranslation::class);
+    }
+
     public function news()
     {
         return $this->belongsToMany(News::class, 'authorities_news');

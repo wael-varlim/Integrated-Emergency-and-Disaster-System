@@ -56,14 +56,14 @@ class LocationSeeder extends Seeder
 
             // Create Governorate Translation (Arabic)
             $governorate->governorateTranslation()->create([
-                'languahe_code' => 'ar',
+                'language_code' => 'ar',
                 'translation'   => $govData['name_ar'],
                 'governorate_id'=> $governorate->id,
             ]);
 
             // Create Governorate Translation (English)
             $governorate->governorateTranslation()->create([
-                'languahe_code' => 'en',
+                'language_code' => 'en',
                 'translation'   => $govData['name'],
                 'governorate_id'=> $governorate->id,
             ]);
@@ -80,14 +80,14 @@ class LocationSeeder extends Seeder
 
                 // Create City Translation (Arabic)
                 $city->cityTranslation()->create([
-                    'languahe_code' => 'ar',
+                    'language_code' => 'ar',
                     'translation'   => $cityData['name_ar'],
                     'city_id'       => $city->id,
                 ]);
 
                 // Create City Translation (English)
                 $city->cityTranslation()->create([
-                    'languahe_code' => 'en',
+                    'language_code' => 'en',
                     'translation'   => $cityData['name'],
                     'city_id'       => $city->id,
                 ]);

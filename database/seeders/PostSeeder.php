@@ -40,14 +40,14 @@ class PostSeeder extends Seeder
             // English translation
             AddressTranslation::create([
                 'address_id'    => $address->id,
-                'languahe_code' => 'en',
+                'language_code' => 'en',
                 'translation'   => $data['street'],
             ]);
 
             // Arabic translation
             AddressTranslation::create([
                 'address_id'    => $address->id,
-                'languahe_code' => 'ar',
+                'language_code' => 'ar',
                 'translation'   => 'اسم العنوان',
             ]);
 

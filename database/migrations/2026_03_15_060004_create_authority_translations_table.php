@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('authority_translations', function (Blueprint $table) {
             $table->id();
-            $table->string('languahe_code', 2);
+            $table->string('language_code', 2);
             $table->string('translation')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->foreignId('authority_type_id')->constrained('authority_types')->cascadeOnDelete();
+            $table->foreignId('authority_id')->constrained('authorities')->cascadeOnDelete();
             $table->timestamps();
         });
     }

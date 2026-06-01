@@ -11,10 +11,6 @@ class AuthorityType extends Model
     ];
 
 
-    public function authorityTranslation()
-    {
-        return $this->hasMany(AuthorityTranslation::class);
-    }
 
     public function authority()
     {
