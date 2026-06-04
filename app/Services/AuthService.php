@@ -10,7 +10,6 @@ use App\Mail\OtpMail;
 use App\Models\City;
 use App\Models\KnownUser;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;

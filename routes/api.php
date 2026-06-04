@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\testController;
 use App\Http\Middleware\RefreshTokenMiddleware;
 use App\Mail\OtpMail;
@@ -25,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
 });
 
-
+Route::post('/posts', [PostController::class, 'show']);
 //for the refresh token request
 // Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class])->group(function () {
 // });

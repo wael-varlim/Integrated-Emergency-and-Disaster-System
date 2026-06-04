@@ -174,13 +174,12 @@ class DemoDataSeeder extends Seeder
         $this->command->info('18 news items created');
 
         // ─────────── 5. Create posts with notifications ───────────
-        $ownerRoles = ['admin', 'news_manager', 'content_manager'];
         $posts = [];
 
         foreach ($newsRecords as $i => $news) {
             $post = Post::create([
                 'title'      => "Post #{$i}: " . substr($newsBodies[$i], 0, 40),
-                'owner_role' => $ownerRoles[$i % count($ownerRoles)],
+                'by_admin' => rand(0,1),
                 'news_id'    => $news->id,
             ]);
             $posts[] = $post;

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->string('owner_role');
+            $table->boolean('by_admin');
             $table->foreignId('news_id')->constrained('news')->cascadeOnDelete();
             $table->timestamps();
         });

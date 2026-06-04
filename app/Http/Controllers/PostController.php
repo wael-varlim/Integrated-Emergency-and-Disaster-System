@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function __construct(protected PostService $postService) {}
+
+
     /**
      * Display a listing of the resource.
      */
@@ -34,9 +38,9 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(Request $request)
     {
-        //
+        return $this->postService->getPosts($request);
     }
 
     /**
