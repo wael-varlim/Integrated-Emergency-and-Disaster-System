@@ -27,4 +27,11 @@ class Address extends Model
     {
         return $this->hasMany(AddressTranslation::class);
     }
+
+
+    //current trnaslation relation
+    public function currentTranslation()
+    {
+        return $this->hasOne(AddressTranslation::class)->where('language_code', app()->getLocale());
+    }
 }

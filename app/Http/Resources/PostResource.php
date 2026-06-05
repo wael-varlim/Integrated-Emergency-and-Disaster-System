@@ -16,7 +16,10 @@ class PostResource extends JsonResource
     {
     return [
         'title' => $this->title,
-        'created_at' => $this->created_at,
+        'created_at' => [
+            'date' => $this->created_at?->format('j, F, Y'),
+            'time' => $this->created_at?->format('g:i a'),
+        ],
 
         'location' => [
             'longitude' => $this->news?->report?->longitude,
@@ -24,11 +27,13 @@ class PostResource extends JsonResource
         ],
 
         'address' => [
-            'street'      => $this->news?->address?->street,
-            'city'        => $this->news?->address?->city?->name,
-            'governorate' => $this->news?->address?->city?->governorate?->name,
+            'street'      => $this->news?->address?->currentTranslation?->translation,
+            'city'        => $this->news?->address?->city?->currentTranslation?->translation,
+            'governorate' => $this->news?->address?->city?->governorate?->currentTranslation?->translation,
         ],
-        'types' => $this->news?->newsType?->pluck('type_name'),
+        'types' => $this->news?->newsType?->map(function ($type) {
+            return $type->currentTranslation?->translation;
+        }),
         'media' => $this->news?->media?->first()?->media_url,
     ];
     }

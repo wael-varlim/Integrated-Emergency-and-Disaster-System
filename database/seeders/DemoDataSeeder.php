@@ -32,11 +32,11 @@ class DemoDataSeeder extends Seeder
             return;
         }
 
-        $cities = City::all();
+        $cities = City::where('governorate_id', 1);
         $newsTypes = NewsType::all();
         $authorities = Authority::all();
 
-        if ($cities->isEmpty() || $newsTypes->isEmpty()) {
+        if (!$cities || $newsTypes->isEmpty()) {
             $this->command->error('Run LocationSeeder and NewsTypeSeeder first.');
             return;
         }
@@ -77,28 +77,46 @@ class DemoDataSeeder extends Seeder
 
         // ─────────── 2. Create 20 addresses across Damascus cities ───────────
         $addresses = [];
-        $streetNames = ['Straight Street', 'Baghdad Street', 'Beirut Street', 'Mezza Highway',
-            'Airport Road', 'Al-Mutanabbi Street', 'Al-Nasr Street', 'Al-Mazzah Street',
-            'Thawra Street', 'Abu Rummaneh Street', 'Al-Jalaa Street', 'Al-Rabwa Street',
-            'Al-Baramkeh Street', 'Al-Malki Street', 'Al-Shafi\'i Street', 'Al-Hamra Street',
-            'Al-Khaled Ibn Al-Walid Street', 'Al-Watani Street', 'Al-Qudsi Street', 'Al-Kouatli Street',
+
+
+        $streetNames = [
+            'Straight Street'            => 'الشارع المستقيم',
+            'Baghdad Street'             => 'شارع بغداد',
+            'Beirut Street'              => 'شارع بيروت',
+            'Mezza Highway'              => 'طريق المزة السريع',
+            'Airport Road'               => 'طريق المطار',
+            'Al-Mutanabbi Street'        => 'شارع المتنبي',
+            'Al-Nasr Street'             => 'شارع النصر',
+            'Al-Mazzah Street'           => 'شارع المزة',
+            'Thawra Street'              => 'شارع الثورة',
+            'Abu Rummaneh Street'        => 'شارع أبو رمانة',
+            'Al-Jalaa Street'            => 'شارع الجلاء',
+            'Al-Rabwa Street'            => 'شارع الربوة',
+            'Al-Baramkeh Street'         => 'شارع البرامكة',
+            'Al-Malki Street'            => 'شارع المالكي',
+            'Al-Shafi\'i Street'         => 'شارع الشافعي',
+            'Al-Hamra Street'            => 'شارع الحمراء',
+            'Al-Khaled Ibn Al-Walid Street' => 'شارع خالد بن الوليد',
+            'Al-Watani Street'           => 'شارع الوطني',
+            'Al-Qudsi Street'            => 'شارع القدسي',
+            'Al-Kouatli Street'          => 'شارع القوتلي',
         ];
 
-        foreach ($streetNames as $i => $street) {
+        foreach ($streetNames as $en => $ar) {
             $cityId = $cityIds[array_rand($cityIds)];
             $address = Address::create([
-                'street'  => $street,
+                'street'  => $en,
                 'city_id' => $cityId,
             ]);
             AddressTranslation::create([
                 'address_id'    => $address->id,
                 'language_code' => 'en',
-                'translation'   => $street,
+                'translation'   => $en,
             ]);
             AddressTranslation::create([
                 'address_id'    => $address->id,
                 'language_code' => 'ar',
-                'translation'   => 'شارع ' . $street,
+                'translation'   => $ar,
             ]);
             $addresses[] = $address;
         }

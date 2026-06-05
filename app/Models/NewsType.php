@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class NewsType extends Model
 {
+    protected $hidden = [
+        'pivot'
+    ];
+    
     protected $fillable = [
         'type_name'
     ];
@@ -24,5 +28,12 @@ class NewsType extends Model
     public function awarenessArticle()
     {
         return $this->hasOne(AwarenessArticle::class);
+    }
+
+
+    //current trnaslation relation
+    public function currentTranslation()
+    {
+        return $this->hasOne(NewsTranslation::class)->where('language_code', app()->getLocale());
     }
 }

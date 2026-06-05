@@ -27,4 +27,11 @@ class Governorate extends Model
     {
         return $this->hasMany(City::class);
     }
+
+
+    //current trnaslation relation
+    public function currentTranslation()
+    {
+        return $this->hasOne(GovernorateTranslation::class)->where('language_code', app()->getLocale());
+    }
 }

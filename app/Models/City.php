@@ -33,4 +33,10 @@ class City extends Model
     {
         return $this->hasMany(Address::class);
     }
+
+    //current trnaslation relation
+    public function currentTranslation()
+    {
+        return $this->hasOne(CityTranslation::class)->where('language_code', app()->getLocale());
+    }
 }

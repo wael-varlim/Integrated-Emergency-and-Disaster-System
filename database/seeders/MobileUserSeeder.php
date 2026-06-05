@@ -27,7 +27,7 @@ class MobileUserSeeder extends Seeder
                 'official_identifier_method' => 'national_id',
                 'first_name'      => 'Test',
                 'last_name'       => 'User',
-                'email'           => 'user@test.com',
+                'email'           => 'user@gmail.com',
                 'password'        => Hash::make('password'),
                 'is_verified'     => true
             ]
