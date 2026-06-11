@@ -1,0 +1,360 @@
+{
+    "info": {
+        "name": "Integrated Emergency & Disaster System - Reports API",
+        "description": "Postman collection for the Report module of the Integrated Emergency and Disaster System.\n\n## Authentication Flow\n1. Register a new account\n2. Login with email/password to get a Bearer token\n3. Use the token to access Report endpoints\n\n## API Base URL\nBy default, Laravel serves API routes under `/api`. Update the `base_url` variable to match your environment.\n\n## Language Support\nThe middleware `SetContentLanguageMiddleware` reads the `Content-Language` header (NOT `Accept-Language`) to switch between Arabic (`ar`) and English (`en`). All report messages are now translatable via `__()` helper with keys in `lang/{locale}/report.php`.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "zed-agent"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost/api",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "description": "Endpoints for user authentication (registration, OTP verification, login, logout).",
+            "item": [
+                {
+                    "name": "Register - Create Account",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "first_name",
+                                    "value": "Ahmed",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "last_name",
+                                    "value": "Ali",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "ahmed@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "official_identifier_method",
+                                    "value": "national_id",
+                                    "type": "text",
+                                    "description": "Must be 'passport' or 'national_id'"
+                                },
+                                {
+                                    "key": "official_identifier",
+                                    "value": "123456789012",
+                                    "type": "text",
+                                    "description": "6-12 characters, unique"
+                                },
+                                {
+                                    "key": "address",
+                                    "value": "Cairo",
+                                    "type": "text",
+                                    "description": "City name; must exist in the database"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "password123",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password_confirmation",
+                                    "value": "password123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/register",
+                            "host": ["{{base_url}}"],
+                            "path": ["register"]
+                        },
+                        "description": "Register a new mobile user account.\n\n**Response (201):**\n```json\n{\n    \"data\": null,\n    \"message\": \"account created successfully\",\n    \"status\": 201\n}\n```"
+                    }
+                },
+                {
+                    "name": "Send OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "email",
+                                    "value": "ahmed@example.com",
+                                    "type": "text",
+                                    "description": "Must match a registered KnownUser email that is not yet verified"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/sendotp",
+                            "host": ["{{base_url}}"],
+                            "path": ["sendotp"]
+                        },
+                        "description": "Send a 6-digit OTP to the user's email for verification.\n\n**Note:** OTP is sent via email (check the configured mail log/driver). For testing, use `log` mail driver to see the OTP in Laravel's log file.\n\n**Response (200):**\n```json\n{\n    \"data\": null,\n    \"message\": \"code sent successfully\",\n    \"status\": 200\n}\n```"
+                    }
+                },
+                {
+                    "name": "Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "email",
+                                    "value": "ahmed@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "otp",
+                                    "value": "123456",
+                                    "type": "text",
+                                    "description": "6-digit code received via email"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/verifyotp",
+                            "host": ["{{base_url}}"],
+                            "path": ["verifyotp"]
+                        },
+                        "description": "Verify the OTP sent to the user's email. This marks the user as verified and returns an API token.\n\n**Response (200):**\n```json\n{\n    \"data\": {\n        \"token\": \"1|abc123...\",\n        \"user\": { ... }\n    },\n    \"message\": \"verification done successfully\",\n    \"status\": 200\n}\n```\n\n**Automation:** After sending this request, set the `token` collection variable with the received token."
+                    }
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "email",
+                                    "value": "ahmed@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "password123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": ["{{base_url}}"],
+                            "path": ["login"]
+                        },
+                        "description": "Login with email and password. Returns a Sanctum Bearer token.\n\n**Response (200):**\n```json\n{\n    \"data\": \"2|def456...\",\n    \"message\": \"login Successfully\",\n    \"status\": 200\n}\n```\n\n**Automation:** After sending this request, set the `token` collection variable with the received token so subsequent authenticated requests use it."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.collectionVariables.set('token', jsonData.data);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/logout",
+                            "host": ["{{base_url}}"],
+                            "path": ["logout"]
+                        },
+                        "description": "Revoke all tokens for the authenticated user.\n\n**Response (200):**\n```json\n{\n    \"data\": null,\n    \"message\": \"Logged out successfully\",\n    \"status\": 200\n}\n```"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Reports",
+            "description": "Endpoints for creating, listing, and viewing reports. All require authentication (Bearer token) and the `Content-Language` header (`ar` or `en`).",
+            "item": [
+                {
+                    "name": "Create Report",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Language",
+                                "value": "ar",
+                                "description": "Language preference (ar/en) — passed through SetContentLanguageMiddleware"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "news_type",
+                                    "value": "fire",
+                                    "type": "text",
+                                    "description": "Required. The type/category of the report (e.g. fire, flood, accident, etc.). Stored as NewsType."
+                                },
+                                {
+                                    "key": "body",
+                                    "value": "There is a fire in the downtown area near the main square.",
+                                    "type": "text",
+                                    "description": "Optional. Text description of the incident (max 5000 characters)."
+                                },
+                                {
+                                    "key": "latitude",
+                                    "value": "30.0444",
+                                    "type": "text",
+                                    "description": "Required. Latitude between -90 and 90."
+                                },
+                                {
+                                    "key": "longitude",
+                                    "value": "31.2357",
+                                    "type": "text",
+                                    "description": "Required. Longitude between -180 and 180."
+                                },
+                                {
+                                    "key": "media",
+                                    "value": "",
+                                    "type": "file",
+                                    "src": null,
+                                    "description": "Optional. Media file (image: jpeg/jpg/png/gif, video: mp4/mov/avi, audio: mp3/wav/m4a). Max 50MB."
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/reports",
+                            "host": ["{{base_url}}"],
+                            "path": ["reports"]
+                        },
+                        "description": "Create a new emergency/disaster report.\n\n**Logic flow:**\n1. Validates input via `StoreReportRequest`\n2. If `city_id`/`street` are not provided, reverse-geocodes lat/lon via Nominatim (OSM) to resolve the city and street\n3. Creates/retrieves Address → creates News → creates Report (with spatial POINT location) → attaches NewsType → uploads media if provided\n4. Gets AI-generated safety advice from GeminiService\n5. Returns formatted report resource + advice\n\n**Response (201):**\n```json\n{\n    \"data\": {\n        \"report\": {\n            \"created_at\": {\n                \"date\": \"12, June, 2026\",\n                \"time\": \"3:45 pm\"\n            },\n            \"location\": {\n                \"longitude\": 31.2357,\n                \"latitude\": 30.0444\n            },\n            \"address\": {\n                \"street\": \"Main Street\",\n                \"city\": \"القاهرة\",\n                \"governorate\": \"القاهرة\"\n            },\n            \"news_type\": \"fire\",\n            \"body\": \"There is a fire in the downtown area near the main square.\",\n            \"media\": \"http://localhost/storage/reports/2026/06/sample.jpg\"\n        },\n        \"advice\": \"AI-generated safety advice from Gemini...\"\n    },\n    \"message\": \"Report created successfully\",\n    \"status\": 201\n}\n```"
+                    }
+                },
+                {
+                    "name": "Get Report by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Language",
+                                "value": "ar",
+                                "description": "Language preference (ar/en)"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/reports/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["reports", "1"]
+                        },
+                        "description": "Fetch a single report by its ID.\n\n**Response (200):**\n```json\n{\n    \"data\": {\n        \"report\": {\n            \"created_at\": {\n                \"date\": \"12, June, 2026\",\n                \"time\": \"3:45 pm\"\n            },\n            \"location\": {\n                \"longitude\": 31.2357,\n                \"latitude\": 30.0444\n            },\n            \"address\": {\n                \"street\": \"Main Street\",\n                \"city\": \"القاهرة\",\n                \"governorate\": \"القاهرة\"\n            },\n            \"news_type\": \"fire\",\n            \"body\": \"Description text...\",\n            \"media\": \"http://localhost/storage/reports/2026/06/sample.jpg\"\n        }\n    },\n    \"message\": \"Report fetched successfully\",\n    \"status\": 200\n}\n```"
+                    }
+                },
+                {
+                    "name": "List My Reports",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Language",
+                                "value": "ar",
+                                "description": "Language preference (ar/en)"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/reports",
+                            "host": ["{{base_url}}"],
+                            "path": ["reports"]
+                        },
+                        "description": "List all reports belonging to the authenticated user, paginated (10 per page).\n\n**Response (200):**\n```json\n{\n    \"data\": {\n        \"reports\": [\n            {\n                \"created_at\": { ... },\n                \"location\": { ... },\n                \"address\": { ... },\n                \"news_type\": \"fire\",\n                \"body\": \"...\",\n                \"media\": \"...\"\n            }\n        ],\n        \"pagination\": {\n            \"navigation\": {\n                \"first_page\": \"http://localhost/api/reports?page=1\",\n                \"last_page\": \"http://localhost/api/reports?page=2\",\n                \"previous_page\": null,\n                \"next_page\": \"http://localhost/api/reports?page=2\"\n            },\n            \"info\": {\n                \"current_page\": 1,\n                \"from\": 1,\n                \"to\": 10,\n                \"last_page\": 2,\n                \"per_page\": 10,\n                \"total\": 12\n            }\n        }\n    },\n    \"message\": \"Reports fetched successfully\",\n    \"status\": 200\n}\n```"
+                    }
+                }
+            ]
+        }
+    ]
+}

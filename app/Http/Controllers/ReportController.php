@@ -2,64 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ApiResponseTrait;
+use App\Http\Requests\Report\StoreReportRequest;
 use App\Models\Report;
-use Illuminate\Http\Request;
+use App\Services\GeminiService;
+use App\Services\ReportService;
+use Illuminate\Http\JsonResponse;
 
 class ReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use ApiResponseTrait;
+
+    public function __construct(
+        protected ReportService $reportService,
+        protected GeminiService $geminiService,
+    ) {}
+
+    public function store(StoreReportRequest $request): JsonResponse
+    {
+        $knownUser = $request->user()->knownUser;
+
+        $data = $request->validated();
+
+        if ($request->hasFile("media")) {
+            $data["media"] = $request->file("media");
+        }
+
+        $reportResource = $this->reportService->createReport($data, $knownUser);
+
+        $advice = $this->geminiService->getAdvice(
+            $data["news_type"],
+            $data["body"] ?? "",
+        );
+
+        return $this->apiResponse(
+            [
+                "report" => $reportResource,
+                "advice" => $advice,
+            ],
+            __("report.created_successfully"),
+            201,
+        );
+    }
+
+    public function show(string $id): JsonResponse
+    {
+        $report = Report::findOrFail($id);
+        $this->authorize("view", $report);
+
+        $reportResource = $this->reportService->getReport($id);
+
+        return $this->apiResponse(
+            [
+                "report" => $reportResource,
+            ],
+            __("report.fetched_successfully"),
+            200,
+        );
+    }
+
     public function index()
     {
-        //
-    }
+        $knownUser = auth()->user()->knownUser;
+        $reports = $this->reportService->getUserReports($knownUser->id);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Report $report)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Report $report)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Report $report)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Report $report)
-    {
-        //
+        return $reports;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\testController;
 use App\Http\Middleware\RefreshTokenMiddleware;
@@ -35,6 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
 //for the refresh token request
 Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class, SetContentLanguageMiddleware::class])->group(function () {
     Route::post('/posts', [PostController::class, 'show']);
+    
+    Route::prefix('reports')->group(function () {
+        Route::post('/', [ReportController::class, 'store']); 
+        Route::get('/', [ReportController::class, 'index']); 
+        Route::get('/{id}', [ReportController::class, 'show']); 
+    });
 });
 
 
