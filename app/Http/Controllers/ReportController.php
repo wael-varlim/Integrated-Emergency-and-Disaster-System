@@ -33,6 +33,7 @@ class ReportController extends Controller
         $advice = $this->geminiService->getAdvice(
             $data["news_type"],
             $data["body"] ?? "",
+            $data["media"] ?? null,
         );
 
         return $this->apiResponse(
