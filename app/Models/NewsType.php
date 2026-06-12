@@ -20,9 +20,9 @@ class NewsType extends Model
         return $this->belongsToMany(News::class, 'news_types_news');
     }
 
-    public function newsTranslation()
+    public function newsTypeTranslation()
     {
-        return $this->hasMany(NewsTranslation::class);
+        return $this->hasMany(NewsTypeTranslation::class);
     }
 
     public function awarenessArticle()
@@ -34,6 +34,6 @@ class NewsType extends Model
     //current trnaslation relation
     public function currentTranslation()
     {
-        return $this->hasOne(NewsTranslation::class)->where('language_code', app()->getLocale());
+        return $this->hasOne(NewsTypeTranslation::class)->where('language_code', app()->getLocale());
     }
 }

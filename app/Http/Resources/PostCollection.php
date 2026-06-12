@@ -4,13 +4,24 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+//use Override;
 
 class PostCollection extends ResourceCollection
 {
+
+    protected string $resourceClass;
+
+    //#[Override]
+    public function __construct($resource, string $resourceClass)
+    {
+        parent::__construct($resource);
+        $this->resourceClass = $resourceClass;
+    }
+
     public function toArray($request): array
     {
         return [
-            'posts' => PostResource::collection($this->collection),
+            'posts' => $this->resourceClass::collection($this->collection),
         ];
     }
 

@@ -19,13 +19,19 @@ Route::get('/test', [testController::class, 'mytest']);
 
 
 //auth
-Route::post('/sendotp',   [AuthController::class, 'sendOtp']);
-Route::post('/verifyotp',   [AuthController::class, 'verifyOtp']);
+Route::post('/otp/send',   [AuthController::class, 'sendOtp']);
+Route::post('/otp/verify',   [AuthController::class, 'verifyOtp']);
 Route::post('/register',   [AuthController::class, 'register']);
 Route::post('/login',   [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('reports')->group(function () {
+        Route::post('/', [ReportController::class, 'store']); 
+        Route::get('/', [ReportController::class, 'index']); 
+        Route::get('/{id}', [ReportController::class, 'show']); 
+    });
 });
 
 // Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
@@ -35,12 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //for the refresh token request
 Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class, SetContentLanguageMiddleware::class])->group(function () {
-    Route::post('/posts', [PostController::class, 'show']);
-    
-    Route::prefix('reports')->group(function () {
-        Route::post('/', [ReportController::class, 'store']); 
-        Route::get('/', [ReportController::class, 'index']); 
-        Route::get('/{id}', [ReportController::class, 'show']); 
+    Route::prefix('posts')->group(function () {
+        Route::post('/normal', [PostController::class, 'showNormalPosts']); 
+        Route::get('/admin', [PostController::class, 'showAdminPosts']); 
     });
 });
 

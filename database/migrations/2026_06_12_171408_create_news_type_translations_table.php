@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('news_translations', function (Blueprint $table) {
+        Schema::create('news_type_translations', function (Blueprint $table) {
             $table->id();
             $table->string('language_code', 2);
             $table->string('translation')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->foreignId('news_id')->constrained('news')->cascadeOnDelete();
+            $table->foreignId('news_type_id')->constrained('news_types')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news_translations');
+        Schema::dropIfExists('news_type_translations');
     }
 };

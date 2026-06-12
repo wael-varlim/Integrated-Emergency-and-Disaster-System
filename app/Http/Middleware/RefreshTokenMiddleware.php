@@ -15,7 +15,8 @@ class RefreshTokenMiddleware
         $user  = $request->user();
         $token = $user?->currentAccessToken();
 
-        if ($token && $token->created_at->diffInDays(now()) > 15) {
+        //if ($token && $token->created_at->diffInDays(now()) > 15) {
+        if ($token && $token->created_at->diffInMinutes(now()) > 2) {
             $token->delete();
             $newToken = $user->createToken($token->name)->plainTextToken;
             $response->headers->set('X-New-Token', $newToken);

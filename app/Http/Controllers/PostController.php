@@ -38,11 +38,16 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function showNormalPosts(Request $request)
     {
-        return $this->postService->getPosts($request);
+        return $this->postService->getNormalPosts($request);
     }
 
+    public function showAdminPosts(Request $request)
+    {
+        return $this->postService->getAdminPosts($request);
+    }
+    
     /**
      * Show the form for editing the specified resource.
      */

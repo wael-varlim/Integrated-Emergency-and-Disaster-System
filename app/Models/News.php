@@ -48,4 +48,16 @@ class News extends Model
     {
         return $this->hasOne(Report::class);
     }
+
+
+        public function newsTranslation()
+    {
+        return $this->hasMany(NewsTranslation::class);
+    }
+
+    //current trnaslation relation
+    public function currentTranslation()
+    {
+        return $this->hasOne(NewsTranslation::class)->where('language_code', app()->getLocale());
+    }
 }
