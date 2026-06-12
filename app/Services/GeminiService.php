@@ -23,8 +23,16 @@ class GeminiService
         string $newsType,
         string $body,
         ?UploadedFile $media = null,
+        string $language = 'en',
     ): array {
         $description = $body ?: "No text description provided.";
+
+        // Determine language instructions based on preferred language
+        $languageInstruction = match(strtolower($language)) {
+            'ar', 'arabic' => '- Respond ENTIRELY in Arabic.',
+            'en', 'english' => '- Respond ENTIRELY in English.',
+            default => '- Detect the language from the "Hazard type" and "User description" fields and respond in that language.',
+        };
 
         $prompt = <<<PROMPT
         You are an intelligent emergency assistant. Provide urgent safety instructions based on the hazard type and the user's description.
@@ -35,10 +43,8 @@ class GeminiService
         Rules:
         - Return ONLY a valid JSON object, no markdown, no extra text.
         - Maximum 5 steps, each step maximum 15 words.
-        - IMPORTANT: Detect the language from the "Hazard type" and "User description" fields.
-        - If any of them is in Arabic, respond ENTIRELY in Arabic.
-        - If any of them is in English, respond ENTIRELY in English.
-        - If a media file is attached (image/audio/video), also consider its content for language detection and safety instructions.
+        {$languageInstruction}
+        - If a media file is attached (image/audio/video), also consider its content for safety instructions.
 
         Required JSON format:
         {
@@ -75,6 +81,7 @@ class GeminiService
             "endpoint" => "{$this->baseUrl}/v1beta/models/{$this->model}:generateContent",
             "news_type" => $newsType,
             "body" => $body,
+            "language" => $language,
             "has_media" => $media !== null,
             "media_type" => $media ? $media->getMimeType() : null,
             "media_size" => $media ? $media->getSize() : null,

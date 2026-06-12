@@ -30,10 +30,14 @@ class ReportController extends Controller
 
         $reportResource = $this->reportService->createReport($data, $knownUser);
 
+        // Get preferred language from Content-Language header (e.g., 'ar' or 'en')
+        $preferredLanguage = $request->header('Content-Language', 'en');
+
         $advice = $this->geminiService->getAdvice(
             $data["news_type"],
             $data["body"] ?? "",
             $data["media"] ?? null,
+            $preferredLanguage,
         );
 
         return $this->apiResponse(
