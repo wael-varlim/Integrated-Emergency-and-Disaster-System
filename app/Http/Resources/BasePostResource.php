@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class BasePostResource extends JsonResource
 {
@@ -29,7 +30,9 @@ class BasePostResource extends JsonResource
                 return $type->currentTranslation?->translation;
             }),
 
-            'media' => $this->news?->media?->first()?->media_url,
+            'media' => ($url = $this->news?->media?->first()?->media_url)
+                ? asset('storage/' . $url)
+                : null,
         ];
     }
 
