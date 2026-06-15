@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\NewsTranslation;
 use App\Models\NewsType;
+use App\Models\NewsTypeTranslation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -23,7 +23,8 @@ class NewsTypeSeeder extends Seeder
             ['name' => 'traffic accident'       ,'name_ar' => 'حادث مرور'],              
             ['name' => 'earthquake'             ,'name_ar' => 'زلزال'],              
             ['name' => 'building collapsing'    ,'name_ar' => 'انهيار مبنى'],
-            ['name' => 'drowning '              ,'name_ar' => 'غرق']              
+            ['name' => 'drowning'              ,'name_ar' => 'غرق'],
+            ['name' => 'kidnapping'              ,'name_ar' => 'خطف'],
         ];
 
 
@@ -32,13 +33,13 @@ class NewsTypeSeeder extends Seeder
                 'type_name'    => $data['name'],
             ]);
 
-            NewsTranslation::create([
+            NewsTypeTranslation::create([
                 'news_type_id' => $type->id,
                 'language_code'  => 'en',
                 'translation'       => $data['name'],
             ]);
 
-            NewsTranslation::create([
+            NewsTypeTranslation::create([
                 'news_type_id' => $type->id,
                 'language_code'  => 'ar',
                 'translation'       => $data['name_ar'],
@@ -52,7 +53,7 @@ class NewsTypeSeeder extends Seeder
         $this->command->table(
             ['Model', 'Count'],
             [
-                ['News type translations',      NewsTranslation::count()],
+                ['News type translations',      NewsTypeTranslation::count()],
                 ['News types',      NewsType::count()],
             ]
         );

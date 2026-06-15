@@ -12,9 +12,11 @@ use App\Models\City;
 use App\Models\KnownUser;
 use App\Models\MediaType;
 use App\Models\News;
+use App\Models\NewsTranslation;
 use App\Models\NewsType;
 use App\Models\Notification;
 use App\Models\Post;
+use App\Models\PostTranslation;
 use App\Models\Region;
 use App\Models\Report;
 use App\Models\Suggestion;
@@ -22,6 +24,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class DemoDataSeeder extends Seeder
 {
@@ -78,28 +81,59 @@ class DemoDataSeeder extends Seeder
         // ─────────── 2. Create 20 addresses across Damascus cities ───────────
         $addresses = [];
 
-
         $streetNames = [
-            'Straight Street'            => 'الشارع المستقيم',
-            'Baghdad Street'             => 'شارع بغداد',
-            'Beirut Street'              => 'شارع بيروت',
-            'Mezza Highway'              => 'طريق المزة السريع',
-            'Airport Road'               => 'طريق المطار',
-            'Al-Mutanabbi Street'        => 'شارع المتنبي',
-            'Al-Nasr Street'             => 'شارع النصر',
-            'Al-Mazzah Street'           => 'شارع المزة',
-            'Thawra Street'              => 'شارع الثورة',
-            'Abu Rummaneh Street'        => 'شارع أبو رمانة',
-            'Al-Jalaa Street'            => 'شارع الجلاء',
-            'Al-Rabwa Street'            => 'شارع الربوة',
-            'Al-Baramkeh Street'         => 'شارع البرامكة',
-            'Al-Malki Street'            => 'شارع المالكي',
-            'Al-Shafi\'i Street'         => 'شارع الشافعي',
-            'Al-Hamra Street'            => 'شارع الحمراء',
+            'Straight Street'               => 'الشارع المستقيم',
+            'Baghdad Street'                => 'شارع بغداد',
+            'Beirut Street'                 => 'شارع بيروت',
+            'Mezza Highway'                 => 'طريق المزة السريع',
+            'Airport Road'                  => 'طريق المطار',
+            'Al-Mutanabbi Street'           => 'شارع المتنبي',
+            'Al-Nasr Street'                => 'شارع النصر',
+            'Al-Mazzah Street'              => 'شارع المزة',
+            'Thawra Street'                 => 'شارع الثورة',
+            'Abu Rummaneh Street'           => 'شارع أبو رمانة',
+            'Al-Jalaa Street'               => 'شارع الجلاء',
+            'Al-Rabwa Street'               => 'شارع الربوة',
+            'Al-Baramkeh Street'            => 'شارع البرامكة',
+            'Al-Malki Street'               => 'شارع المالكي',
+            'Al-Shafi\'i Street'            => 'شارع الشافعي',
+            'Al-Hamra Street'               => 'شارع الحمراء',
             'Al-Khaled Ibn Al-Walid Street' => 'شارع خالد بن الوليد',
-            'Al-Watani Street'           => 'شارع الوطني',
-            'Al-Qudsi Street'            => 'شارع القدسي',
-            'Al-Kouatli Street'          => 'شارع القوتلي',
+            'Al-Watani Street'              => 'شارع الوطني',
+            'Al-Qudsi Street'               => 'شارع القدسي',
+            'Al-Kouatli Street'             => 'شارع القوتلي',
+            'Al-Yarmouk Street'             => 'شارع اليرموك',
+            'Al-Qadam Street'               => 'شارع القدم',
+            'Al-Abbasiyeen Street'          => 'شارع العباسيين',
+            'Al-Hijaz Street'               => 'شارع الحجاز',
+            'Palestine Street'              => 'شارع فلسطين',
+            'Al-Salhiyeh Street'            => 'شارع الصالحية',
+            'Al-Shaghour Street'            => 'شارع الشاغور',
+            'Al-Qanawat Street'             => 'شارع القنوات',
+            'Al-Midan Street'               => 'شارع الميدان',
+            'Damascus-Beirut Highway'       => 'طريق دمشق-بيروت السريع',
+            'Al-Mazraa Street'              => 'شارع المزرعة',
+            'Bab Touma Street'              => 'شارع باب توما',
+            'Al-Muhajireen Street'          => 'شارع المهاجرين',
+            'Ibn Asaker Street'             => 'شارع ابن عساكر',
+            'Al-Zeitoun Street'             => 'شارع الزيتون',
+            'Al-Qimarieh Street'            => 'شارع القيمرية',
+            'Rukn al-Din Street'            => 'شارع ركن الدين',
+            'Bab al-Jabiya Street'          => 'شارع باب الجابية',
+            'Al-Qaboun Road'                => 'طريق القابون',
+            'Al-Hurriyah Street'            => 'شارع الحرية',
+            'Ibn Khaldoun Street'           => 'شارع ابن خلدون',
+            'Al-Arnous Street'              => 'شارع الأرنوس',
+            'Damascus-Homs Highway'         => 'طريق دمشق-حمص السريع',
+            'Al-Nour Street'                => 'شارع النور',
+            'Al-Joura Street'               => 'شارع الجورة',
+            'Al-Ameen Street'               => 'شارع الأمين',
+            'Al-Zablatani Street'           => 'شارع الزبلطاني',
+            'Al-Kasaa Street'               => 'شارع القصاع',
+            'Al-Baraka Street'              => 'شارع البركة',
+            'Al-Kamaliyeh Street'           => 'شارع الكاملية',
+            'Umayyad Square Road'           => 'طريق ساحة الأمويين',
+            'Al-Qassa Street'               => 'شارع القصة',
         ];
 
         foreach ($streetNames as $en => $ar) {
@@ -146,39 +180,141 @@ class DemoDataSeeder extends Seeder
         $this->command->info('Authorities created');
 
         // ─────────── 4. Create 18 news items ───────────
+        // CHANGED: each entry now has 'en' and 'ar' keys
         $newsBodies = [
-            'Severe thunderstorm warning issued for Damascus region.',
-            'Road closure on Mezza Highway due to flooding.',
-            'Emergency response drill scheduled for next week.',
-            'Power outage reported in Al-Mazzah district.',
-            'Water supply interruption in Rukn al-Din area.',
-            'Medical emergency response team deployed to Barza.',
-            'Fire contained in Al-Qaboun industrial area.',
-            'Traffic accident on Airport Road causing delays.',
-            'Flash flood warning for Damascus countryside.',
-            'Cold weather advisory: temperatures to drop below freezing.',
-            'Public transport strike affecting major routes.',
-            'Gas leak contained in Al-Midan district.',
-            'Search and rescue operation underway in Al-Yarmouk.',
-            'Health advisory: air quality warning due to dust storm.',
-            'Community cleanup campaign in Kafr Sousa.',
-            'Bridge inspection causing delays on Baghdad Street.',
-            'Emergency shelter activated for displaced families.',
-            'Civil defense conducts safety awareness workshop.',
+            ['en' => 'Severe thunderstorm warning issued for Damascus region.',         'ar' => 'صدر تحذير من عاصفة رعدية شديدة في منطقة دمشق.'],
+            ['en' => 'Road closure on Mezza Highway due to flooding.',                  'ar' => 'إغلاق طريق المزة السريع بسبب الفيضانات.'],
+            ['en' => 'Emergency response drill scheduled for next week.',                'ar' => 'تدريب على الاستجابة للطوارئ مقرر الأسبوع القادم.'],
+            ['en' => 'Power outage reported in Al-Mazzah district.',                    'ar' => 'تم الإبلاغ عن انقطاع في التيار الكهربائي في حي المزة.'],
+            ['en' => 'Water supply interruption in Rukn al-Din area.',                  'ar' => 'انقطاع مياه في منطقة ركن الدين.'],
+            ['en' => 'Medical emergency response team deployed to Barza.',               'ar' => 'تم نشر فريق الاستجابة الطبية للطوارئ في برزة.'],
+            ['en' => 'Fire contained in Al-Qaboun industrial area.',                    'ar' => 'تم إخماد حريق في المنطقة الصناعية بالقابون.'],
+            ['en' => 'Traffic accident on Airport Road causing delays.',                 'ar' => 'حادث سير على طريق المطار يتسبب في تأخيرات.'],
+            ['en' => 'Flash flood warning for Damascus countryside.',                    'ar' => 'تحذير من فيضانات مفاجئة في ريف دمشق.'],
+            ['en' => 'Cold weather advisory: temperatures to drop below freezing.',      'ar' => 'تحذير من طقس بارد: درجات الحرارة ستنخفض دون الصفر.'],
+            ['en' => 'Public transport strike affecting major routes.',                  'ar' => 'إضراب في وسائل النقل العام يؤثر على المسارات الرئيسية.'],
+            ['en' => 'Gas leak contained in Al-Midan district.',                        'ar' => 'تم احتواء تسرب غاز في حي الميدان.'],
+            ['en' => 'Search and rescue operation underway in Al-Yarmouk.',              'ar' => 'عملية بحث وإنقاذ جارية في اليرموك.'],
+            ['en' => 'Health advisory: air quality warning due to dust storm.',          'ar' => 'تنبيه صحي: تحذير من جودة الهواء بسبب عاصفة ترابية.'],
+            ['en' => 'Community cleanup campaign in Kafr Sousa.',                       'ar' => 'حملة تنظيف مجتمعي في كفر سوسة.'],
+            ['en' => 'Bridge inspection causing delays on Baghdad Street.',              'ar' => 'فحص الجسر يتسبب في تأخيرات على شارع بغداد.'],
+            ['en' => 'Emergency shelter activated for displaced families.',              'ar' => 'تم تفعيل ملجأ طارئ للعائلات النازحة.'],
+            ['en' => 'Civil defense conducts safety awareness workshop.',                'ar' => 'الدفاع المدني ينظم ورشة توعية حول السلامة.'],
+            ['en' => 'Flooding reported in Bab Touma old city area.',                   'ar' => 'الإبلاغ عن فيضان في منطقة باب توما في المدينة القديمة.'],
+            ['en' => 'Wildfire reported near Qasioun Mountain slopes.',                 'ar' => 'الإبلاغ عن حريق في الغابات بالقرب من منحدرات جبل قاسيون.'],
+            ['en' => 'Chemical spill on industrial road in Adra.',                      'ar' => 'تسرب كيميائي على الطريق الصناعي في عدرا.'],
+            ['en' => 'Earthquake tremor felt across Damascus suburbs.',                  'ar' => 'شعور بهزة أرضية في ضواحي دمشق.'],
+            ['en' => 'School evacuated due to gas smell in Al-Midan.',                  'ar' => 'إخلاء مدرسة بسبب رائحة غاز في الميدان.'],
+            ['en' => 'Partial building collapse reported in old city district.',         'ar' => 'الإبلاغ عن انهيار جزئي لمبنى في حي المدينة القديمة.'],
+            ['en' => 'Road cave-in near Umayyad Square causing disruption.',            'ar' => 'انهسار في الطريق قرب ساحة الأمويين يتسبب في اضطرابات.'],
+            ['en' => 'Burst water pipe floods Al-Hamra Street.',                        'ar' => 'كسر في أنبوب مياه يُغرق شارع الحمراء.'],
+            ['en' => 'Power transformer explosion in Kafr Sousa neighborhood.',         'ar' => 'انفجار محول كهربائي في حي كفر سوسة.'],
+            ['en' => 'Toxic smoke from factory fire reported in Qudsaya.',              'ar' => 'دخان سام من حريق مصنع في قدسيا.'],
+            ['en' => 'Landslide blocking mountain road to Zabadani.',                   'ar' => 'انهيار أرضي يسد طريق الجبل إلى الزبداني.'],
+            ['en' => 'Heavy snow warning issued for Damascus highlands.',               'ar' => 'تحذير من ثلوج كثيفة في مرتفعات دمشق.'],
+            ['en' => 'Pedestrian bridge closed for emergency inspection in Al-Mezze.',  'ar' => 'إغلاق جسر للمشاة لإجراء فحص طارئ في المزة.'],
+            ['en' => 'Storm drains overflowing in Bab Sharqi area.',                   'ar' => 'فيضان مصارف الأمطار في منطقة باب شرقي.'],
+            ['en' => 'Wildfire approaching residential area in Dummar.',                'ar' => 'حريق في الغابات يقترب من منطقة سكنية في دمر.'],
+            ['en' => 'Fuel shortage alert at Damascus filling stations.',               'ar' => 'تنبيه بنقص الوقود في محطات التعبئة بدمشق.'],
+            ['en' => 'Mass casualty drill held at Al-Mouwasat Hospital.',               'ar' => 'إجراء تدريب على الكوارث الجماعية في مستشفى المواساة.'],
+            ['en' => 'Sinkhole opens on Thawra Street near city center.',               'ar' => 'انفتاح حفرة هبوط في شارع الثورة قرب مركز المدينة.'],
+            ['en' => 'Electrical fire breaks out in Rukn al-Din market.',               'ar' => 'اندلاع حريق كهربائي في سوق ركن الدين.'],
+            ['en' => 'Ambulance response delayed due to road blockage in Jobar.',       'ar' => 'تأخر سيارة الإسعاف بسبب انسداد الطريق في جوبر.'],
+            ['en' => 'Flash flood sweeps vehicles in Barada River valley.',             'ar' => 'فيضان مفاجئ يجرف مركبات في وادي نهر بردى.'],
+            ['en' => 'Crane collapse at construction site in Al-Salhiyeh.',             'ar' => 'سقوط رافعة في موقع بناء في الصالحية.'],
+            ['en' => 'Smoke detected in Damascus International Airport terminal.',      'ar' => 'اكتشاف دخان في صالة مطار دمشق الدولي.'],
+            ['en' => 'Hail storm damages vehicles across city parking areas.',          'ar' => 'عاصفة برد تتلف المركبات في مواقف السيارات في أنحاء المدينة.'],
+            ['en' => 'Sewage overflow reported in Al-Qaboun neighborhood.',             'ar' => 'الإبلاغ عن فيضان مجاري في حي القابون.'],
+            ['en' => 'Train derailment reported near Al-Qadam station.',                'ar' => 'الإبلاغ عن خروج قطار عن مساره قرب محطة القدم.'],
+            ['en' => 'Stampede reported at crowded market in Bab al-Jabiya.',           'ar' => 'الإبلاغ عن تدافع في سوق مكتظ في باب الجابية.'],
+            ['en' => 'Water contamination warning issued for Jobar area.',              'ar' => 'صدر تحذير من تلوث المياه في منطقة جوبر.'],
+            ['en' => 'Emergency road repairs on Beirut Street causing closures.',       'ar' => 'أعمال إصلاح طارئة في شارع بيروت تتسبب في إغلاقات.'],
+            ['en' => 'Dust storm reduces visibility to near zero across Damascus.',     'ar' => 'عاصفة ترابية تقلص مدى الرؤية إلى شبه صفر في دمشق.'],
+            ['en' => 'Fire alarm triggered at Damascus University main campus.',        'ar' => 'تفعيل إنذار حريق في الحرم الرئيسي لجامعة دمشق.'],
+            ['en' => 'Collapsed retaining wall blocks road in Al-Muhajireen.',          'ar' => 'جدار استناد منهار يسد الطريق في المهاجرين.'],
         ];
 
         $newsRecords = [];
         foreach ($newsBodies as $i => $body) {
+            // CHANGED: $body['en'] instead of $body
             $news = News::create([
-                'body'          => $body,
+                'body'          => $body['en'],
                 'address_id'    => $addresses[$i % count($addresses)]->id,
                 'known_user_id' => $users[$i % count($users)]->id,
             ]);
 
-            $news->media()->create([
-                'media_url' => "images/image{$i}.jpg",
-                'media_type_id' => rand(1,3)
+            // ADDED: news translations
+            NewsTranslation::create([
+                'news_id'       => $news->id,
+                'language_code' => 'en',
+                'translation'   => $body['en'],
             ]);
+            NewsTranslation::create([
+                'news_id'       => $news->id,
+                'language_code' => 'ar',
+                'translation'   => $body['ar'],
+            ]);
+
+
+
+            $mediaImages = [
+                'https://images.unsplash.com/photo-1516567832553-66232148f74c?w=800',
+                'https://images.unsplash.com/photo-1713623311317-d3c43a4be4cf?w=800',
+                'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800',
+                'https://images.unsplash.com/photo-1751152110851-ec8c5b94132f?w=800',
+                'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
+
+                'https://images.unsplash.com/photo-1516567832553-66232148f74c?w=800',
+                'https://images.unsplash.com/photo-1713623311317-d3c43a4be4cf?w=800',
+                'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800',
+                'https://images.unsplash.com/photo-1751152110851-ec8c5b94132f?w=800',
+                'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
+
+                'https://images.unsplash.com/photo-1516567832553-66232148f74c?w=800',
+                'https://images.unsplash.com/photo-1713623311317-d3c43a4be4cf?w=800',
+                'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800',
+                'https://images.unsplash.com/photo-1751152110851-ec8c5b94132f?w=800',
+                'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
+
+                'https://images.unsplash.com/photo-1516567832553-66232148f74c?w=800',
+                'https://images.unsplash.com/photo-1713623311317-d3c43a4be4cf?w=800',
+                'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800',
+                'https://images.unsplash.com/photo-1751152110851-ec8c5b94132f?w=800',
+                'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
+
+                'https://images.unsplash.com/photo-1516567832553-66232148f74c?w=800',
+                'https://images.unsplash.com/photo-1713623311317-d3c43a4be4cf?w=800',
+                'https://images.unsplash.com/photo-1547683905-f686c993aae5?w=800',
+                'https://images.unsplash.com/photo-1751152110851-ec8c5b94132f?w=800',
+                'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
+            ];
+
+            $random = rand(1, 3);
+            if($random == 1)
+            {
+                $contents = file_get_contents($mediaImages[$i % count($mediaImages)]);
+                Storage::disk('public')->put("images/seed_{$i}.jpg", $contents);
+
+                $news->media()->create([
+                    'media_url'     => "images/seed_{$i}.jpg",
+                    'media_type_id' => $random,
+                ]);
+            }
+            elseif($random == 2)
+            {
+                $news->media()->create([
+                    'media_url'     => "videos/seed_{$i}.jpg",
+                    'media_type_id' => $random,
+                ]);
+            }
+            else
+            {
+                $news->media()->create([
+                    'media_url'     => "audio/seed_{$i}.jpg",
+                    'media_type_id' => $random,
+                ]);
+            }
+            
             $type = $newsTypes[$i % $newsTypes->count()];
             $news->newsType()->attach($type->id);
 
@@ -195,11 +331,25 @@ class DemoDataSeeder extends Seeder
         $posts = [];
 
         foreach ($newsRecords as $i => $news) {
+            // CHANGED: $newsBodies[$i]['en'] instead of $newsBodies[$i]
             $post = Post::create([
-                'title'      => "Post #{$i}: " . substr($newsBodies[$i], 0, 40),
-                'by_admin' => rand(0,1),
-                'news_id'    => $news->id,
+                'title'    => "Post #{$i}: " . mb_substr($newsBodies[$i]['en'], 0, 10),
+                'by_admin' => rand(0, 1),
+                'news_id'  => $news->id,
             ]);
+
+            // ADDED: post translations
+            PostTranslation::create([
+                'post_id'       => $post->id,
+                'language_code' => 'en',
+                'translation'   => "Post #{$i}: " . mb_substr($newsBodies[$i]['en'], 0, 10),
+            ]);
+            PostTranslation::create([
+                'post_id'       => $post->id,
+                'language_code' => 'ar',
+                'translation'   => "المنشور #{$i}: " . mb_substr($newsBodies[$i]['ar'], 0, 10),
+            ]);
+
             $posts[] = $post;
         }
 
@@ -207,7 +357,8 @@ class DemoDataSeeder extends Seeder
         foreach (array_slice($posts, 0, 10) as $i => $post) {
             Notification::create([
                 'title'     => 'Notification #' . ($i + 1),
-                'body'      => 'Alert: ' . substr($newsBodies[$i], 0, 50),
+                // CHANGED: $newsBodies[$i]['en'] instead of $newsBodies[$i]
+                'body'      => 'Alert: ' . substr($newsBodies[$i]['en'], 0, 10),
                 'post_id'   => $post->id,
                 'region_id' => $regionIds[array_rand($regionIds)],
             ]);
@@ -243,24 +394,19 @@ class DemoDataSeeder extends Seeder
 
         // ─────────── 7. Create 6 awareness articles ───────────
         $articleData = [
-            ['Earthquake Preparedness Guide', 'Learn how to prepare for earthquakes and stay safe during seismic events. This guide covers emergency kits, evacuation plans, and safety procedures.',],
-            ['First Aid Basics', 'Essential first aid techniques for emergency situations including wound care, CPR, and treating burns.',
-            ],
-            ['Flood Safety Tips', 'Important safety measures to take before, during, and after flooding. Includes information on evacuation routes and emergency supplies.',
-            ],
-            ['Fire Prevention and Safety', 'Comprehensive guide on preventing fires at home and work, plus what to do if a fire breaks out.',
-            ],
-            ['Heatwave Survival Guide', 'How to stay safe during extreme heat conditions. Covers hydration, cooling centers, and heat-related illness recognition.',
-            ],
-            ['Winter Storm Preparedness', 'Prepare for winter storms with tips on heating, insulation, emergency supplies, and travel safety.',
-            ],
+            ['Earthquake Preparedness Guide', 'Learn how to prepare for earthquakes and stay safe during seismic events. This guide covers emergency kits, evacuation plans, and safety procedures.'],
+            ['First Aid Basics', 'Essential first aid techniques for emergency situations including wound care, CPR, and treating burns.'],
+            ['Flood Safety Tips', 'Important safety measures to take before, during, and after flooding. Includes information on evacuation routes and emergency supplies.'],
+            ['Fire Prevention and Safety', 'Comprehensive guide on preventing fires at home and work, plus what to do if a fire breaks out.'],
+            ['Heatwave Survival Guide', 'How to stay safe during extreme heat conditions. Covers hydration, cooling centers, and heat-related illness recognition.'],
+            ['Winter Storm Preparedness', 'Prepare for winter storms with tips on heating, insulation, emergency supplies, and travel safety.'],
         ];
 
         foreach ($articleData as $i => [$title, $body]) {
             AwarenessArticle::create([
-                'title'       => $title,
-                'body'        => $body,
-                'icon_url'    => 'awareness-icons/default.svg',
+                'title'        => $title,
+                'body'         => $body,
+                'icon_url'     => 'awareness-icons/default.svg',
                 'news_type_id' => $newsTypes[$i % $newsTypes->count()]->id,
             ]);
         }

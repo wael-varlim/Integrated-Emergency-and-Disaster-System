@@ -23,4 +23,16 @@ class Post extends Model
     {
         return $this->hasOne(Notification::class);
     }
+
+
+    public function postTranslation()
+    {
+        return $this->hasMany(PostTranslation::class);
+    }
+
+    //current trnaslation relation
+    public function currentTranslation()
+    {
+        return $this->hasOne(PostTranslation::class)->where('language_code', app()->getLocale());
+    }
 }

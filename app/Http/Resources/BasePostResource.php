@@ -2,29 +2,22 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
-class PostResource extends JsonResource
+class BasePostResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request)
+    protected function sharedFields(): array
     {
         return [
-            'title' => $this->title,
-            'body' => $this->news?->body,
             'created_at' => [
                 'date' => $this->created_at?->format('j, F, Y'),
                 'time' => $this->created_at?->format('g:i a'),
-            ],
-
-            'location' => [
-                'longitude' => $this->news?->report?->longitude,
-                'latitude'  => $this->news?->report?->latitude,
             ],
 
             'address' => [
@@ -32,10 +25,18 @@ class PostResource extends JsonResource
                 'city'        => $this->news?->address?->city?->currentTranslation?->translation,
                 'governorate' => $this->news?->address?->city?->governorate?->currentTranslation?->translation,
             ],
+
             'types' => $this->news?->newsType?->map(function ($type) {
                 return $type->currentTranslation?->translation;
             }),
-            'media' => $this->news?->media?->first()?->media_url,
+
+            'media' => ($url = $this->news?->media?->first()?->media_url)
+                ? asset('storage/' . $url)
+                : null,
         ];
     }
+
+    // public function toArray(Request $request): array
+    // {
+    // }
 }
