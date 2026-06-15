@@ -51,10 +51,11 @@ class ReportService
             ]);
 
             // Create Report with geographic location
+            // Convert string coordinates to geographic POINT
             $report = Report::create([
                 "news_id" => $news->id,
                 "location" => DB::raw(
-                    "POINT({$data["longitude"]}, {$data["latitude"]})",
+                    "ST_GeomFromText('POINT({$data["longitude"]} {$data["latitude"]})', 4326)"
                 ),
             ]);
 
