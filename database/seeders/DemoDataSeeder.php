@@ -374,7 +374,7 @@ class DemoDataSeeder extends Seeder
         $baseLat = 33.5;
         $baseLng = 36.3;
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $news = $newsRecords[$i % count($newsRecords)];
             $monthOffset = $i % 12;
             $createdAt = now()->subMonths($monthOffset)->subDays(rand(0, 27));

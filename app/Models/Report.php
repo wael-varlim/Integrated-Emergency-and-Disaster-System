@@ -13,31 +13,7 @@ class Report extends Model
         'news_id',
     ];
 
-    /**
-     * Get the longitude from the geographic point.
-     */
-    protected function longitude(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => DB::selectOne(
-                'SELECT ST_X(location) as longitude FROM reports WHERE id = ?',
-                [$this->id]
-            )?->longitude
-        );
-    }
 
-    /**
-     * Get the latitude from the geographic point.
-     */
-    protected function latitude(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => DB::selectOne(
-                'SELECT ST_Y(location) as latitude FROM reports WHERE id = ?',
-                [$this->id]
-            )?->latitude
-        );
-    }
 
     public function news()
     {

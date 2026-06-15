@@ -35,14 +35,22 @@ class GeminiService
         };
 
         $prompt = <<<PROMPT
-        You are an intelligent emergency assistant. Provide urgent safety instructions based on the hazard type and the user's description.
+        You are an intelligent emergency assistant embedded in a Syrian emergency reporting platform.
+        The user has ALREADY submitted an emergency report through this app, which automatically notifies the relevant authorities.
 
         Hazard type: {$newsType}
         User description: {$description}
 
+        Your job is to provide IMMEDIATE on-the-ground safety instructions for what the user should do RIGHT NOW while help is on the way.
+
         Rules:
         - Return ONLY a valid JSON object, no markdown, no extra text.
         - Maximum 5 steps, each step maximum 15 words.
+        - Steps must be PHYSICAL ACTIONS the user can take immediately (evacuate, move away, cover, etc.).
+        - NEVER tell the user to call any emergency number or contact any organization — authorities have already been notified via this app.
+        - NEVER suggest reporting or notifying anyone — that has already been done.
+        - Focus on personal safety, protecting others nearby, and minimizing harm until help arrives.
+        - Do NOT give generic advice. Tailor steps specifically to the hazard type and description provided.
         {$languageInstruction}
         - If a media file is attached (image/audio/video), also consider its content for safety instructions.
 
