@@ -27,9 +27,9 @@ class PostCollection extends ResourceCollection
 
     public function paginationInformation($request, $paginated, $default)
     {
-        if ($default['meta']['total'] === 0) {
-            return [];
-        }
+        // if ($default['meta']['total'] === 0) {
+        //     return [];
+        // }
 
         return [
             'pagination' => [

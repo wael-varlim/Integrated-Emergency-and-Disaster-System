@@ -7,6 +7,7 @@ use App\Http\Resources\ReportResource;
 use App\Http\Resources\ReportCollection;
 use App\Models\Address;
 use App\Models\City;
+use App\Models\KnownUser;
 use App\Models\Media;
 use App\Models\MediaType;
 use App\Models\News;
@@ -24,7 +25,7 @@ class ReportService
     /**
      * Create a new report and return the formatted response.
      */
-    public function createReport(array $data, $knownUser)
+    public function createReport(array $data, KnownUser $knownUser)
     {
         // Resolve address from coordinates if city_id/street not provided
         if (!isset($data["city_id"]) || !isset($data["street"])) {
@@ -168,7 +169,7 @@ class ReportService
         $mediaType = MediaType::firstOrCreate([
             "type_name" => $this->getMediaTypeName($mimeType),
         ]);
-        $path = $file->store("reports/" . date("Y/m"), "public");
+        $path = $file->store("images" . date("Y/m"), "public");
 
         Media::create([
             "media_url" => Storage::url($path),
