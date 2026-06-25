@@ -20,7 +20,7 @@ class GeminiService
     }
 
     public function getAdvice(
-        string $newsType,
+        array $newsType,
         string $body,
         ?UploadedFile $media = null,
         string $language = 'en',
@@ -34,11 +34,13 @@ class GeminiService
             default => '- Detect the language from the "Hazard type" and "User description" fields and respond in that language.',
         };
 
+        $newsTypeString = implode(', ', $newsType);
+        //return ["title"=>$newsTypeString];
         $prompt = <<<PROMPT
         You are an intelligent emergency assistant embedded in a Syrian emergency reporting platform.
         The user has ALREADY submitted an emergency report through this app, which automatically notifies the relevant authorities.
 
-        Hazard type: {$newsType}
+        Hazard type: {$newsTypeString}
         User description: {$description}
 
         Your job is to provide IMMEDIATE on-the-ground safety instructions for what the user should do RIGHT NOW while help is on the way.

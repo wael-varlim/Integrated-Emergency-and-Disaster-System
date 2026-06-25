@@ -19,10 +19,10 @@ class SetContentLanguageMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        $lang = $request->header('Content-Language');
+        $lang = $request->header('Accept-Language');
 
         if ($lang === null) {
-            return $this->apiResponse(null, 'Content-Language header is required', 400);
+            return $this->apiResponse(null, 'Accept-Language header is required', 400);
         }
 
         $allowed = ['en', 'ar'];

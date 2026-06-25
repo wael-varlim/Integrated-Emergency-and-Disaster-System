@@ -27,10 +27,12 @@ Route::post('/login',   [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
 
-    Route::prefix('reports')->group(function () {
-        Route::post('/', [ReportController::class, 'store']); 
-        Route::get('/', [ReportController::class, 'index']); 
-        Route::get('/{id}', [ReportController::class, 'show']); 
+    Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
+        Route::prefix('reports')->group(function () {
+            Route::post('/', [ReportController::class, 'store']); 
+            Route::get('/', [ReportController::class, 'index']); 
+            Route::get('/{id}', [ReportController::class, 'show']); 
+        });
     });
 });
 

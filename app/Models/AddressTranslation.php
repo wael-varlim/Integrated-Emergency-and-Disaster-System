@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AddressTranslation extends Model
 {
     protected $fillable = [
-        'languahe_code',
+        'language_code',
         'translation',
         'address_id'
     ];

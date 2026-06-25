@@ -45,7 +45,7 @@ class ReportController extends Controller
                 "report" => $reportResource,
                 "advice" => $advice,
             ],
-            __("report.created_successfully"),
+            "report created successfully",
             201,
         );
     }
@@ -55,7 +55,7 @@ class ReportController extends Controller
         $report = Report::findOrFail($id);
         $this->authorize("view", $report);
 
-        $reportResource = $this->reportService->getReport($id);
+        $reportResource = $this->reportService->getReportWithResponse((int)$id);
 
         return $this->apiResponse(
             [

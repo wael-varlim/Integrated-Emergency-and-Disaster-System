@@ -15,16 +15,16 @@ class NewsTypeSeeder extends Seeder
     public function run(): void
     {
         $news_types = [
-            ['name' => 'fire'                   ,'name_ar' => 'حريق'],              
-            ['name' => 'flood'                  ,'name_ar' => 'فيضان'],              
-            ['name' => 'theft'                  ,'name_ar' => 'سرقة'],              
-            ['name' => 'murder'                 ,'name_ar' => 'قتل'],              
-            ['name' => 'injury'                 ,'name_ar' => 'اصابة جسدية'],
-            ['name' => 'traffic accident'       ,'name_ar' => 'حادث مرور'],              
-            ['name' => 'earthquake'             ,'name_ar' => 'زلزال'],              
-            ['name' => 'building collapsing'    ,'name_ar' => 'انهيار مبنى'],
-            ['name' => 'drowning'              ,'name_ar' => 'غرق'],
-            ['name' => 'kidnapping'              ,'name_ar' => 'خطف'],
+            ['name' => 'Fire'                   ,'name_ar' => 'حريق'],              
+            ['name' => 'Flood'                  ,'name_ar' => 'فيضان'],              
+            ['name' => 'Theft'                  ,'name_ar' => 'سرقة'],              
+            ['name' => 'Murder'                 ,'name_ar' => 'قتل'],              
+            ['name' => 'Injury'                 ,'name_ar' => 'اصابة جسدية'],
+            ['name' => 'Traffic accident'       ,'name_ar' => 'حادث مرور'],              
+            ['name' => 'Earthquake'             ,'name_ar' => 'زلزال'],              
+            ['name' => 'Building collapsing'    ,'name_ar' => 'انهيار مبنى'],
+            ['name' => 'Drowning'              ,'name_ar' => 'غرق'],
+            ['name' => 'Kidnapping'              ,'name_ar' => 'خطف'],
         ];
 
 
