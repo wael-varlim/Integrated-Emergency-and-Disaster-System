@@ -17,7 +17,7 @@
       <p style="color:#666; line-height:1.7;">Hey there! Use the code below to complete your registration. It expires in <strong>10 minutes</strong>.</p>
       
       <div style="background:#f8f8f8; border-radius:8px; padding:24px; text-align:center; margin:24px 0;">
-        <div style="font-size:36px; font-weight:500; letter-spacing:12px; font-family:monospace;">{{ $otp }}</div>
+        <div style="font-size:30px; font-weight:500; letter-spacing:8px; font-family:monospace;">{{ $otp }}</div>
         <div style="font-size:12px; color:#999; margin-top:8px;">Your one-time verification code</div>
       </div>
 
