@@ -15,18 +15,22 @@ class NewsTypeSeeder extends Seeder
     public function run(): void
     {
         $news_types = [
-            ['name' => 'Fire'                   ,'name_ar' => 'حريق'],              
-            ['name' => 'Flood'                  ,'name_ar' => 'فيضان'],              
-            ['name' => 'Theft'                  ,'name_ar' => 'سرقة'],              
-            ['name' => 'Murder'                 ,'name_ar' => 'قتل'],              
-            ['name' => 'Injury'                 ,'name_ar' => 'اصابة جسدية'],
-            ['name' => 'Traffic accident'       ,'name_ar' => 'حادث مرور'],              
-            ['name' => 'Earthquake'             ,'name_ar' => 'زلزال'],              
-            ['name' => 'Building collapsing'    ,'name_ar' => 'انهيار مبنى'],
-            ['name' => 'Drowning'              ,'name_ar' => 'غرق'],
-            ['name' => 'Kidnapping'              ,'name_ar' => 'خطف'],
+            ['name' => 'Fire',                      'name_ar' => 'حريق'],
+            ['name' => 'Explosion',                 'name_ar' => 'انفجار'],
+            ['name' => 'Flood',                     'name_ar' => 'فيضان'],
+            ['name' => 'Earthquake',                'name_ar' => 'زلزال'],
+            ['name' => 'Traffic accident',          'name_ar' => 'حادث مرور'],
+            ['name' => 'Building collapse',         'name_ar' => 'انهيار مبنى'],
+            ['name' => 'Medical emergency',         'name_ar' => 'طوارئ طبية'],
+            ['name' => 'Injury',                    'name_ar' => 'إصابة جسدية'],
+            ['name' => 'Theft',                     'name_ar' => 'سرقة'],
+            ['name' => 'Armed robbery',             'name_ar' => 'سطو مسلح'],
+            ['name' => 'Assault',                   'name_ar' => 'اعتداء'],
+            ['name' => 'Murder',                    'name_ar' => 'قتل'],
+            ['name' => 'Kidnapping',                'name_ar' => 'خطف'],
+            ['name' => 'Gang violence',             'name_ar' => 'عنف عصابات'],
+            ['name' => 'Missing person',            'name_ar' => 'شخص مفقود'],
         ];
-
 
         foreach ($news_types as $data) {
             $type = NewsType::create([

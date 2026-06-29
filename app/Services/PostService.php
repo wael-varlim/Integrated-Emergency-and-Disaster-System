@@ -98,5 +98,19 @@ class PostService
                 'status' => 200,
             ]);
     }
+
+
+    public function getPostsLocation(Request $request)
+    {
+        $locations = Post::join('news', 'posts.news_id', '=', 'news.id')
+                        ->join('reports', 'news.id', '=', 'reports.news_id')
+                        ->whereDate('posts.created_at', now()->timezone('Asia/Damascus')->toDateString())
+                        ->where('posts.by_admin', false)
+                        ->selectRaw('ST_X(reports.location) as longitude, ST_Y(reports.location) as latitude')
+                        ->get();
+
+        return $this->apiResponse($locations, 'Today\'s post locations retrieved successfully', 200);
+                        //return "hi";
+    }
     
 }

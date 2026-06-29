@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('by_admin');
             $table->foreignId('news_id')->constrained('news')->cascadeOnDelete();
             $table->timestamps();
+            $table->index('created_at');
         });
     }
 
