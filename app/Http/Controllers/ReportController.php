@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReportCreated;
 use App\Http\Controllers\Traits\ApiResponseTrait;
 use App\Http\Requests\Report\StoreReportRequest;
 use App\Models\Report;
@@ -30,15 +31,27 @@ class ReportController extends Controller
 
         $reportResource = $this->reportService->createReport($data, $knownUser);
 
-        // Get preferred language from Content-Language header (e.g., 'ar' or 'en')
-        $preferredLanguage = $request->header('Content-Language', 'en');
+        $report = $reportResource->resource;
+
+        $types = $report->news->newsType;
+
+        $isDirectPost  = $types->contains('post_visibility', 'direct');        
+        $needsDecision = !$isDirectPost && $types->contains('post_visibility', 'ai');
+
+
+        $preferredLanguage = $request->header('Accept-Language', 'en');
 
         $advice = $this->geminiService->getAdvice(
             $data["news_type"],
             $data["body"] ?? "",
             $data["media"] ?? null,
             $preferredLanguage,
+            $needsDecision,
         );
+
+        $isPublic = $needsDecision ? ($advice['is_public'] ?? false) : null;
+
+        event(new ReportCreated($report, $isPublic, $isDirectPost));
 
         return $this->apiResponse(
             [

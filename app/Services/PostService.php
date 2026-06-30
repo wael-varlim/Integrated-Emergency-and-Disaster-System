@@ -10,6 +10,7 @@ use App\Http\Resources\NormalPostResource;
 use App\Http\Resources\PostCollection;
 use App\Models\News;
 use App\Models\Post;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 
@@ -113,4 +114,11 @@ class PostService
                         //return "hi";
     }
     
+    public function createFromReport(Report $report)
+    {
+        Post::create([
+            'news_id' => $report->news->id,
+            'by_admin' => false,
+        ]);
+    }
 }

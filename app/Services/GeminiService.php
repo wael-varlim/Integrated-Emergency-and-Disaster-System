@@ -24,6 +24,7 @@ class GeminiService
         string $body,
         ?UploadedFile $media = null,
         string $language = 'en',
+        bool $includePostDecision = false,
     ): array {
         $description = $body ?: "No text description provided.";
 
@@ -66,6 +67,27 @@ class GeminiService
             ]
         }
         PROMPT;
+
+        if ($includePostDecision) {
+            $prompt .= <<<EXTRA
+
+            Additionally, based on the hazard type, user description, and any attached media, decide whether this incident should be published as a public news post to warn nearby users.
+
+            Set "is_public" to true ONLY if the incident meets at least one of these:
+            - It poses an ongoing or likely threat to people who are NOT the reporter (e.g. a multi-car accident blocking a road, a theft pattern in a public area, multiple people injured)
+            - Nearby users could take action to protect themselves if they knew about it
+            - The scale or severity suggests it extends beyond a single private individual
+
+            Set "is_public" to false if:
+            - The incident appears contained to the reporter alone with no wider threat
+            - The description is vague or lacks enough context to justify a public warning
+            - Sharing it would expose private details without clear public safety benefit
+
+            When in doubt, prefer false.
+
+            Add "is_public": true or false to your JSON response.
+            EXTRA;
+        }
 
         $parts = [["text" => $prompt]];
 
@@ -168,10 +190,16 @@ class GeminiService
             return $this->fallbackAdvice();
         }
 
-        return [
+        $result = [
             "title" => trim($parsed["title"]),
             "steps" => array_values(array_map("trim", $parsed["steps"])),
         ];
+
+        if ($includePostDecision) {
+            $result["is_public"] = (bool) ($parsed["is_public"] ?? false);
+        }
+
+        return $result;
     }
 
     /**

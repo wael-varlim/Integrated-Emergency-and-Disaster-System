@@ -11,6 +11,7 @@ use App\Models\News;
 use App\Models\NewsType;
 use App\Models\Report;
 use Brick\Math\BigInteger;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -45,7 +46,7 @@ class ReportService
         $reportData["street"] = $location["street"];
         $reportData["street_translations"] = $location["street_translations"];
 
-        $reportModel = $this->storeReportRecord($reportData, $knownUser, $mediaPath, $mediaMime);
+        $reportModel = $this->storeReportRecord($reportData, $knownUser, $mediaPath, $mediaMime, $reportData["media"]);
 
         $reportData = $this->getReport($reportModel->id);
 
@@ -56,9 +57,10 @@ class ReportService
     }
 
 
-    private function storeReportRecord(array $reportData, KnownUser $knownUser, ?string $mediaPath, ?string $mediaMime)
+    private function storeReportRecord(array $reportData, KnownUser $knownUser,
+            ?string $mediaPath, ?string $mediaMime, UploadedFile $file)
     {
-        return DB::transaction(function () use ($reportData, $knownUser, $mediaPath, $mediaMime) 
+        return DB::transaction(function () use ($reportData, $knownUser, $mediaPath, $mediaMime, $file) 
         {
             $address = Address::firstOrCreate([
                 "street" => $reportData["street"],
@@ -87,7 +89,7 @@ class ReportService
             }
 
             if ($mediaPath) {
-                $this->mediaService->saveMediaRecord($mediaPath, $mediaMime, $news);
+                $this->mediaService->saveMediaRecord($mediaPath, $mediaMime, $news, $file);
             }
 
             return $reportModel;  
@@ -143,7 +145,7 @@ class ReportService
     {
         return Report::with([
             "news:id,body,address_id,known_user_id",
-            "news.newsType:id,type_name",
+            "news.newsType:id,type_name,post_visibility",
             "news.newsType.currentTranslation:id,news_type_id,translation",
             "news.address:id,street,city_id",
             "news.address.currentTranslation:id,address_id,translation",
