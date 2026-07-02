@@ -54,4 +54,9 @@ class AuthController extends Controller
     {
         return $this->auth_service->attemptLogout($request);
     }
+
+    public function refresh()
+    {
+        return $this->apiResponse(null, 'Success', 200);
+    }
 }

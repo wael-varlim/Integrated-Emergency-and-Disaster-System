@@ -10,6 +10,7 @@ class Post extends Model
         'title',
         'owner_role',
         'news_id',
+        'by_admin'
     ];
 
 

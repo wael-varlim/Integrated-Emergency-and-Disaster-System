@@ -35,10 +35,13 @@ class ReportResource extends JsonResource
                     $this->news?->address?->city?->governorate
                         ?->currentTranslation?->translation,
             ],
-            "news_type" => $this->news?->newsType?->first()?->currentTranslation
-                ?->translation,
+            'types' => $this->news?->newsType?->map(function ($type) {
+                return $type->currentTranslation?->translation;
+            }),
             "body" => $this->news?->body,
-            "media" => $this->news?->media?->first()?->media_url,
+            "media" => ($url = $this->news?->media?->first()?->media_url) ?
+             asset('' . $url)
+                : null,
         ];
     }
 }

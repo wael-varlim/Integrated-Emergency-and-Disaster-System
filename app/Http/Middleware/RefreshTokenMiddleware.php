@@ -13,13 +13,19 @@ class RefreshTokenMiddleware
         $response = $next($request);
 
         $user  = $request->user();
-        $token = $user?->currentAccessToken();
+        $oldToken = $user?->currentAccessToken();
 
         //if ($token && $token->created_at->diffInDays(now()) > 15) {
-        if ($token && $token->created_at->diffInMinutes(now()) > 2) {
-            $token->delete();
-            $newToken = $user->createToken($token->name)->plainTextToken;
+        if ($oldToken && $oldToken->created_at->diffInMinutes(now()) > 2) 
+        {    
+            $newToken = $user->createToken($oldToken->name)->plainTextToken;
             $response->headers->set('X-New-Token', $newToken);
+
+            $body = json_decode($response->getContent(), true);
+            $body['data']['new_access_token'] = $newToken;
+            $response->setContent(json_encode($body));
+
+            $oldToken->delete();
         }
 
         return $response;

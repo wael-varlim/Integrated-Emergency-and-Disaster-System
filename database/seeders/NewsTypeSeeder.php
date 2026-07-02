@@ -15,22 +15,32 @@ class NewsTypeSeeder extends Seeder
     public function run(): void
     {
         $news_types = [
-            ['name' => 'fire'                   ,'name_ar' => 'حريق'],              
-            ['name' => 'flood'                  ,'name_ar' => 'فيضان'],              
-            ['name' => 'theft'                  ,'name_ar' => 'سرقة'],              
-            ['name' => 'murder'                 ,'name_ar' => 'قتل'],              
-            ['name' => 'injury'                 ,'name_ar' => 'اصابة جسدية'],
-            ['name' => 'traffic accident'       ,'name_ar' => 'حادث مرور'],              
-            ['name' => 'earthquake'             ,'name_ar' => 'زلزال'],              
-            ['name' => 'building collapsing'    ,'name_ar' => 'انهيار مبنى'],
-            ['name' => 'drowning'              ,'name_ar' => 'غرق'],
-            ['name' => 'kidnapping'              ,'name_ar' => 'خطف'],
-        ];
+            // direct
+            ['name' => 'Fire',             'name_ar' => 'حريق',            'post_visibility' => 'direct'],
+            ['name' => 'Explosion',        'name_ar' => 'انفجار',           'post_visibility' => 'direct'],
+            ['name' => 'Flood',            'name_ar' => 'فيضان',            'post_visibility' => 'direct'],
+            ['name' => 'Earthquake',       'name_ar' => 'زلزال',            'post_visibility' => 'direct'],
+            ['name' => 'Building collapse','name_ar' => 'انهيار مبنى',      'post_visibility' => 'direct'],
+            ['name' => 'Armed robbery',    'name_ar' => 'سطو مسلح',         'post_visibility' => 'direct'],
+            ['name' => 'Murder',           'name_ar' => 'قتل',              'post_visibility' => 'direct'],
+            ['name' => 'Kidnapping',       'name_ar' => 'خطف',              'post_visibility' => 'direct'],
+            ['name' => 'Gang violence',    'name_ar' => 'عنف عصابات',       'post_visibility' => 'direct'],
+            ['name' => 'Missing person',   'name_ar' => 'شخص مفقود',        'post_visibility' => 'direct'],
 
+            // ai
+            ['name' => 'Injury',           'name_ar' => 'إصابة جسدية',      'post_visibility' => 'ai'],
+            ['name' => 'Traffic accident', 'name_ar' => 'حادث مرور',        'post_visibility' => 'ai'],
+            ['name' => 'Theft',            'name_ar' => 'سرقة',             'post_visibility' => 'ai'],
+
+            // never
+            ['name' => 'Assault',          'name_ar' => 'اعتداء',           'post_visibility' => 'never'],
+            ['name' => 'Medical emergency','name_ar' => 'طوارئ طبية',       'post_visibility' => 'never'],
+        ];
 
         foreach ($news_types as $data) {
             $type = NewsType::create([
                 'type_name'    => $data['name'],
+                'post_visibility' => $data['post_visibility'],
             ]);
 
             NewsTypeTranslation::create([

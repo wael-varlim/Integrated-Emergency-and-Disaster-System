@@ -47,6 +47,11 @@ class PostController extends Controller
     {
         return $this->postService->getAdminPosts($request);
     }
+
+    public function showPostsLocation(Request $request)
+    {
+        return $this->postService->getPostsLocation($request);
+    }
     
     /**
      * Show the form for editing the specified resource.

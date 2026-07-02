@@ -23,8 +23,8 @@ class StoreReportRequest extends FormRequest
     {
         return [
             // News Type (required) - string value (type name)
-            "news_type" => ["required", "string", "max:255"],
-
+            'news_type'   => 'required|array',
+            'news_type.*' => 'string',
             // Text (nullable)
             "body" => ["nullable", "string", "max:5000"],
 
@@ -48,8 +48,9 @@ class StoreReportRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "news_type.required" => __("report.news_type_required"),
-            "news_type.string" => __("report.news_type_string"),
+            'news_type.required'   => __("report.news_type_required"),
+            'news_type.array'      => __("report.news_type_array"),
+            'news_type.*.string'   => __("report.news_type_string"),
 
             "latitude.required" => __("report.latitude_required"),
             "latitude.between" => __("report.latitude_between"),

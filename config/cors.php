@@ -25,10 +25,9 @@ return [
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+    'exposed_headers' => ['X-New-Token'],
 
     'max_age' => 0,
 
     'supports_credentials' => true,
-
 ];

@@ -293,24 +293,24 @@ class DemoDataSeeder extends Seeder
             if($random == 1)
             {
                 $contents = file_get_contents($mediaImages[$i % count($mediaImages)]);
-                Storage::disk('public')->put("images/seed_{$i}.jpg", $contents);
+                Storage::disk('public')->put("images/seeder/seed_{$i}.jpg", $contents);
 
                 $news->media()->create([
-                    'media_url'     => "images/seed_{$i}.jpg",
+                    'media_url'     => "images/seeder/seed_{$i}.jpg",
                     'media_type_id' => $random,
                 ]);
             }
             elseif($random == 2)
             {
                 $news->media()->create([
-                    'media_url'     => "videos/seed_{$i}.jpg",
+                    'media_url'     => "videos/seeder/seed_{$i}.jpg",
                     'media_type_id' => $random,
                 ]);
             }
             else
             {
                 $news->media()->create([
-                    'media_url'     => "audio/seed_{$i}.jpg",
+                    'media_url'     => "audios/seeder/seed_{$i}.jpg",
                     'media_type_id' => $random,
                 ]);
             }
@@ -374,7 +374,7 @@ class DemoDataSeeder extends Seeder
         $baseLat = 33.5;
         $baseLng = 36.3;
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $news = $newsRecords[$i % count($newsRecords)];
             $monthOffset = $i % 12;
             $createdAt = now()->subMonths($monthOffset)->subDays(rand(0, 27));

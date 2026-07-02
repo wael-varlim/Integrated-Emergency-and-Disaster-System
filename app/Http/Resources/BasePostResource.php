@@ -21,7 +21,8 @@ class BasePostResource extends JsonResource
             ],
 
             'address' => [
-                'street'      => $this->news?->address?->currentTranslation?->translation,
+                'street'      => $this->news?->address?->currentTranslation?->translation??
+                    $this->news?->address?->street,
                 'city'        => $this->news?->address?->city?->currentTranslation?->translation,
                 'governorate' => $this->news?->address?->city?->governorate?->currentTranslation?->translation,
             ],

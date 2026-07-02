@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('news_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('type_name')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->enum('post_visibility', ['direct', 'ai', 'never'])->default('never');
-            $table->timestamps();
+        Schema::table('posts', function (Blueprint $table) {
+            $table->string('title')->nullable()->change();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news_types');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->string('title')->nullable(false)->change();
+        });
     }
 };

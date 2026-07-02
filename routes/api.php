@@ -26,27 +26,35 @@ Route::post('/login',   [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
+    Route::get('/posts/location', [PostController::class, 'showPostsLocation']);
 
-    Route::prefix('reports')->group(function () {
-        Route::post('/', [ReportController::class, 'store']); 
-        Route::get('/', [ReportController::class, 'index']); 
-        Route::get('/{id}', [ReportController::class, 'show']); 
+    Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
+        Route::prefix('reports')->group(function () {
+            Route::post('/', [ReportController::class, 'store']); 
+            Route::get('/', [ReportController::class, 'index']); 
+            Route::get('/{id}', [ReportController::class, 'show']); 
+        });
+
+        Route::prefix('posts')->group(function () {
+            Route::post('/normal', [PostController::class, 'showNormalPosts']); 
+            Route::get('/admin', [PostController::class, 'showAdminPosts']); 
+        });
     });
 });
 
-// Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
-//     Route::post('/posts', [PostController::class, 'show']);
+
+// //for the refresh token request
+// Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class, SetContentLanguageMiddleware::class])->group(function () {
+//     Route::prefix('posts')->group(function () {
+//         Route::post('/normal', [PostController::class, 'showNormalPosts']); 
+//         Route::get('/admin', [PostController::class, 'showAdminPosts']); 
+//     });
 // });
 
 
-//for the refresh token request
-Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class, SetContentLanguageMiddleware::class])->group(function () {
-    Route::prefix('posts')->group(function () {
-        Route::post('/normal', [PostController::class, 'showNormalPosts']); 
-        Route::get('/admin', [PostController::class, 'showAdminPosts']); 
-    });
+Route::middleware(['auth:sanctum', RefreshTokenMiddleware::class])->group(function () {
+    Route::get('/refresh', [AuthController::class, 'refresh']);
 });
-
 
 
 
