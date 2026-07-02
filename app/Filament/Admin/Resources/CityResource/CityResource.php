@@ -22,9 +22,7 @@ class CityResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasAnyPermission([
-            'view_any_city', 'create_city', 'update_city', 'delete_city',
-        ]) ?? false;
+        return false;
     }
 
     public static function form(Schema $schema): Schema

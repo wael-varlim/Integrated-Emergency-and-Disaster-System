@@ -22,9 +22,7 @@ class GovernorateResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasAnyPermission([
-            'view_any_governorate', 'create_governorate', 'update_governorate', 'delete_governorate',
-        ]) ?? false;
+        return false;
     }
 
     public static function form(Schema $schema): Schema
