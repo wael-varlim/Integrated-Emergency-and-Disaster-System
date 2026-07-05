@@ -79,7 +79,8 @@ class ReportInfolist
                     ->schema([
                         TextEntry::make('news.address.street')
                             ->label('Street Address')
-                            ->formatStateUsing(fn ($state) => $state ? mb_convert_encoding($state, 'UTF-8', 'UTF-8') : '—'),
+                            ->formatStateUsing(fn ($state) => $state ? mb_convert_encoding($state, 'UTF-8', 'UTF-8') : '—')
+                            ->columnSpanFull(),
                         
                         TextEntry::make('news.address.city.name')
                             ->label('City')
@@ -93,12 +94,6 @@ class ReportInfolist
                             ->color('primary')
                             ->formatStateUsing(fn ($state) => $state ? mb_convert_encoding($state, 'UTF-8', 'UTF-8') : '—'),
                         
-                        TextEntry::make('news.address.city.governorate.region.city.name')
-                            ->label('Region')
-                            ->badge()
-                            ->color('info')
-                            ->formatStateUsing(fn ($state) => $state ? mb_convert_encoding($state, 'UTF-8', 'UTF-8') : '—'),
-                        
                         TextEntry::make('coordinates')
                             ->label('GPS Coordinates')
                             ->copyable()
@@ -106,10 +101,9 @@ class ReportInfolist
                             ->formatStateUsing(fn ($state, $record) => $state ?: '—')
                             ->url(fn ($record) => $record->google_maps_link)
                             ->openUrlInNewTab()
-                            ->tooltip('Click to view on Google Maps')
-                            ->columnSpanFull(),
+                            ->tooltip('Click to view on Google Maps'),
                     ])
-                    ->columns(2)
+                    ->columns(3)
                     ->collapsible(),
 
                 Section::make('Media Attachments')
