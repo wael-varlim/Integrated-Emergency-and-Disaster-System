@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class AuthorityTranslation extends Model
 {
     protected $fillable = [
-        'languahe_code',
+        'language_code',
         'translation',
         'authority_id'
     ];
 
-    public function authorityType()
+    public function authority()
     {
         return $this->belongsTo(Authority::class);
     }

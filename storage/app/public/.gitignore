@@ -1,2 +1,5 @@
 *
 !.gitignore
+!awareness-icons/
+awareness-icons/*
+!awareness-icons/default.svg

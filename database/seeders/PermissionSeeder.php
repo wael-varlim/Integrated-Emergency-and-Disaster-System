@@ -29,6 +29,7 @@ class PermissionSeeder extends Seeder
             'city',
             'address',
             'news_type',
+            'user',
         ];
 
         $actions = ['view_any', 'view', 'create', 'update', 'delete'];
@@ -77,6 +78,7 @@ class PermissionSeeder extends Seeder
             'view_any_region', 'view_region',
             'view_any_governorate', 'view_governorate',
             'view_any_city', 'view_city',
+            'view_any_user', 'view_user', // Report managers need to see who reported
         ]);
 
         // 5. Suggestion Manager
@@ -97,6 +99,12 @@ class PermissionSeeder extends Seeder
         $viewer->syncPermissions(
             Permission::where('name', 'like', 'view_%')->pluck('name')->toArray()
         );
+
+        // 8. User Viewer (only view users)
+        $userViewer = Role::firstOrCreate(['name' => 'user_viewer', 'guard_name' => 'web']);
+        $userViewer->syncPermissions([
+            'view_any_user', 'view_user',
+        ]);
 
         $this->command->info(' Permissions and Roles seeded successfully!');
         $this->command->table(

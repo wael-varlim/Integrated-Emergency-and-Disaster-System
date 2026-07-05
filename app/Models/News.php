@@ -13,6 +13,31 @@ class News extends Model
         'address_id'
     ];
 
+    /**
+     * Override toArray to clean malformed UTF-8 characters
+     */
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+        return $this->sanitizeUtf8($array);
+    }
+
+    /**
+     * Recursively sanitize UTF-8 in array
+     */
+    protected function sanitizeUtf8($data)
+    {
+        if (is_array($data)) {
+            return array_map([$this, 'sanitizeUtf8'], $data);
+        }
+        
+        if (is_string($data)) {
+            // Remove invalid UTF-8 characters
+            return mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+        }
+        
+        return $data;
+    }
 
     public function knownUser() 
     {
@@ -50,12 +75,12 @@ class News extends Model
     }
 
 
-        public function newsTranslation()
+    public function newsTranslations()
     {
         return $this->hasMany(NewsTranslation::class);
     }
 
-    //current trnaslation relation
+    //current translation relation
     public function currentTranslation()
     {
         return $this->hasOne(NewsTranslation::class)->where('language_code', app()->getLocale());

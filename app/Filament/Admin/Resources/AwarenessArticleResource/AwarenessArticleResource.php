@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\AwarenessArticleResource;
 
 use App\Filament\Admin\Resources\AwarenessArticleResource\Pages;
 use App\Filament\Admin\Resources\AwarenessArticleResource\Schemas\AwarenessArticleForm;
+use App\Filament\Admin\Resources\AwarenessArticleResource\Schemas\AwarenessArticleInfolist;
 use App\Filament\Admin\Resources\AwarenessArticleResource\Tables\AwarenessArticleTable;
 use App\Models\AwarenessArticle;
 use Filament\Schemas\Schema;
@@ -33,6 +34,11 @@ class AwarenessArticleResource extends Resource
         return AwarenessArticleForm::schema($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return AwarenessArticleInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return AwarenessArticleTable::table($table);
@@ -41,7 +47,10 @@ class AwarenessArticleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAwarenessArticles::route('/'),
+            'index' => Pages\ListAwarenessArticles::route('/'),
+            'create' => Pages\CreateAwarenessArticle::route('/create'),
+            'edit' => Pages\EditAwarenessArticle::route('/{record}/edit'),
+            'view' => Pages\ViewAwarenessArticle::route('/{record}'),
         ];
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Authority extends Model
 {
     protected $fillable = [
+        'name',
         'authority_type_id'
     ];
 

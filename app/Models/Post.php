@@ -8,7 +8,6 @@ class Post extends Model
 {
     protected $fillable = [
         'title',
-        'owner_role',
         'news_id',
         'by_admin'
     ];
@@ -25,13 +24,18 @@ class Post extends Model
         return $this->hasOne(Notification::class);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 
-    public function postTranslation()
+
+    public function postTranslations()
     {
         return $this->hasMany(PostTranslation::class);
     }
 
-    //current trnaslation relation
+    //current translation relation
     public function currentTranslation()
     {
         return $this->hasOne(PostTranslation::class)->where('language_code', app()->getLocale());

@@ -27,13 +27,22 @@ class ReportTable
                     ->searchable()
                     ->placeholder('—'),
 
-                Tables\Columns\TextColumn::make('news.user.knownUser.first_name')
+                Tables\Columns\TextColumn::make('news.knownUser')
                     ->label('Reported By')
-                    ->formatStateUsing(fn ($record) =>
-                        $record->news?->user?->knownUser
-                            ? $record->news->user->knownUser->first_name . ' ' . $record->news->user->knownUser->last_name
-                            : 'Anonymous'
-                    ),
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($record->news && $record->news->knownUser) {
+                            return $record->news->knownUser->first_name . ' ' . $record->news->knownUser->last_name;
+                        }
+                        return 'Anonymous';
+                    })
+                    ->url(function ($record) {
+                        if ($record->news && $record->news->knownUser && $record->news->knownUser->user_id) {
+                            return route('filament.admin.resources.users.view', ['record' => $record->news->knownUser->user_id]);
+                        }
+                        return null;
+                    })
+                    ->color('primary')
+                    ->searchable(['first_name', 'last_name']),
 
                 Tables\Columns\IconColumn::make('news.post')
                     ->label('Has Post')
@@ -64,6 +73,7 @@ class ReportTable
                 Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_report')),
             ])
+            ->recordUrl(fn ($record) => route('filament.admin.resources.report-resource.reports.view', ['record' => $record]))
             ->toolbarActions([
                 Actions\BulkActionGroup::make([
                     Actions\DeleteBulkAction::make()

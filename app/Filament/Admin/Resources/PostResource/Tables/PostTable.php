@@ -2,7 +2,9 @@
 
 namespace App\Filament\Admin\Resources\PostResource\Tables;
 
+use App\Models\City;
 use Filament\Actions;
+use Filament\Forms;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -14,11 +16,15 @@ class PostTable
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('owner_role')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('by_admin')
+                    ->label('Created by Admin')
+                    ->badge()
+                    ->color(fn ($state) => $state ? 'success' : 'gray')
+                    ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
                 Tables\Columns\TextColumn::make('news.body')
-                ->label('body')
-                ->searchable(),
+                    ->label('Body')
+                    ->searchable()
+                    ->limit(50),
                 Tables\Columns\TextColumn::make('news.address.city.name')
                     ->label('City')
                     ->searchable(),
@@ -35,7 +41,40 @@ class PostTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('city')
+                    ->label('City')
+                    ->options(City::all()->pluck('name', 'id'))
+                    ->query(function ($query, $state) {
+                        if ($state['value']) {
+                            $query->whereHas('news.address.city', function ($q) use ($state) {
+                                $q->where('id', $state['value']);
+                            });
+                        }
+                    })
+                    ->searchable(),
+
+                Tables\Filters\Filter::make('by_admin')
+                    ->label('Created by Admin')
+                    ->query(fn ($query) => $query->where('by_admin', true)),
+
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->label('Created From'),
+                        Forms\Components\DatePicker::make('created_until')
+                            ->label('Created Until'),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn ($query, $date) => $query->whereDate('created_at', '>=', $date)
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn ($query, $date) => $query->whereDate('created_at', '<=', $date)
+                            );
+                    }),
             ])
             ->recordActions([
                 Actions\ViewAction::make(),

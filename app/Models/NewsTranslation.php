@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class NewsTranslation extends Model
 {
     protected $fillable = [
-        'languahe_code',
+        'language_code',
         'translation',
-        'news_type_id'
+        'news_id'
     ];
 
 
 
-    public function newsType()
+    public function news()
     {
-        return $this->belongsTo(NewsType::class);
+        return $this->belongsTo(News::class);
     }
 }

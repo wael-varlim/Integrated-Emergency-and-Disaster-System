@@ -2,11 +2,9 @@
 
 namespace App\Filament\Admin\Resources\PostResource\Schemas;
 
-use App\Models\Region;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
 class PostForm
@@ -17,36 +15,79 @@ class PostForm
             ->schema([
                 Section::make('Post Details')
                     ->schema([
-                        TextInput::make('title')
-                            ->required()
-                            ->maxLength(255),
-                  
-                        Textarea::make('news_body')
-                            ->required()
-                            ->label('News Body')
-                            ->rows(5)
-                            ->dehydrated(true),
+                        Tabs::make('Post Translations')
+                            ->tabs([
+                                Tabs\Tab::make('Arabic')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('title.ar')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->label('Title (Arabic)'),
+                                    ]),
+                                
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('title.en')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->label('Title (English)'),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
+
+                               Tabs::make('News Body Translations')
+                            ->tabs([
+                                Tabs\Tab::make('Arabic')
+                                    ->schema([
+                                        Forms\Components\Textarea::make('news_body.ar')
+                                            ->required()
+                                            ->rows(5)
+                                            ->label('News Body (Arabic)'),
+                                    ]),
+                                
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        Forms\Components\Textarea::make('news_body.en')
+                                            ->required()
+                                            ->rows(5)
+                                            ->label('News Body (English)'),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
                     ]),
-                
 
                 Section::make('Notification Details')
-                    ->description('A notification will be created for this post')
+                    ->description('A notification will be created for ALL regions')
                     ->schema([
-                        TextInput::make('notification_title')
-                            ->label('Notification Title')
-                            ->required()
-                            ->dehydrated(true),
-                        Textarea::make('notification_body')
-                            ->label('Notification Body')
-                            ->required()
-                            ->rows(3)
-                            ->dehydrated(true),
-                        Select::make('region_id')
-                            ->label('Target Region')
-                            ->options(Region::with('city')->get()->pluck('city.name', 'id')->filter())
-                            ->searchable()
-                            ->required()
-                            ->dehydrated(true),
+                        Tabs::make('Notification Translations')
+                            ->tabs([
+                                Tabs\Tab::make('Arabic')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('notification_title.ar')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->label('Notification Title (Arabic)'),
+                                        
+                                        Forms\Components\Textarea::make('notification_body.ar')
+                                            ->required()
+                                            ->rows(3)
+                                            ->label('Notification Body (Arabic)'),
+                                    ]),
+                                
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('notification_title.en')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->label('Notification Title (English)'),
+                                        
+                                        Forms\Components\Textarea::make('notification_body.en')
+                                            ->required()
+                                            ->rows(3)
+                                            ->label('Notification Body (English)'),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
                     ]),
             ]);
     }

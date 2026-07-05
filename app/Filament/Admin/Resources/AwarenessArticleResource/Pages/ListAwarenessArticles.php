@@ -4,9 +4,9 @@ namespace App\Filament\Admin\Resources\AwarenessArticleResource\Pages;
 
 use App\Filament\Admin\Resources\AwarenessArticleResource\AwarenessArticleResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\ListRecords;
 
-class ManageAwarenessArticles extends ManageRecords
+class ListAwarenessArticles extends ListRecords
 {
     protected static string $resource = AwarenessArticleResource::class;
 

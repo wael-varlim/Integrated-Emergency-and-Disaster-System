@@ -15,6 +15,7 @@ use App\Models\News;
 use App\Models\NewsTranslation;
 use App\Models\NewsType;
 use App\Models\Notification;
+use App\Models\NotificationTranslations;
 use App\Models\Post;
 use App\Models\PostTranslation;
 use App\Models\Region;
@@ -289,28 +290,27 @@ class DemoDataSeeder extends Seeder
                 'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
             ];
 
+            // OPTIMIZED: Skip slow image downloads - just reference URLs directly
             $random = rand(1, 3);
             if($random == 1)
             {
-                $contents = file_get_contents($mediaImages[$i % count($mediaImages)]);
-                Storage::disk('public')->put("images/seeder/seed_{$i}.jpg", $contents);
-
+                // Use Unsplash URL directly instead of downloading
                 $news->media()->create([
-                    'media_url'     => "images/seeder/seed_{$i}.jpg",
+                    'media_url'     => $mediaImages[$i % count($mediaImages)],
                     'media_type_id' => $random,
                 ]);
             }
             elseif($random == 2)
             {
                 $news->media()->create([
-                    'media_url'     => "videos/seeder/seed_{$i}.jpg",
+                    'media_url'     => "videos/seeder/seed_{$i}.mp4",
                     'media_type_id' => $random,
                 ]);
             }
             else
             {
                 $news->media()->create([
-                    'media_url'     => "audios/seeder/seed_{$i}.jpg",
+                    'media_url'     => "audios/seeder/seed_{$i}.mp3",
                     'media_type_id' => $random,
                 ]);
             }
@@ -355,12 +355,27 @@ class DemoDataSeeder extends Seeder
 
         // Notifications for first 10 posts
         foreach (array_slice($posts, 0, 10) as $i => $post) {
-            Notification::create([
+            $notification = Notification::create([
                 'title'     => 'Notification #' . ($i + 1),
                 // CHANGED: $newsBodies[$i]['en'] instead of $newsBodies[$i]
                 'body'      => 'Alert: ' . substr($newsBodies[$i]['en'], 0, 10),
                 'post_id'   => $post->id,
                 'region_id' => $regionIds[array_rand($regionIds)],
+            ]);
+
+            // Create notification translations
+            NotificationTranslations::create([
+                'notification_id'    => $notification->id,
+                'language_code'      => 'en',
+                'title_translation'  => 'Notification #' . ($i + 1),
+                'body_translation'   => 'Alert: ' . substr($newsBodies[$i]['en'], 0, 10),
+            ]);
+
+            NotificationTranslations::create([
+                'notification_id'    => $notification->id,
+                'language_code'      => 'ar',
+                'title_translation'  => 'إشعار #' . ($i + 1),
+                'body_translation'   => 'تنبيه: ' . mb_substr($newsBodies[$i]['ar'], 0, 10),
             ]);
         }
 

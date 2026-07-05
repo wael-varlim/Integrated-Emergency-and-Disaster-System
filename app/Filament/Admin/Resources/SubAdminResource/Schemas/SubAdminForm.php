@@ -47,7 +47,11 @@ class SubAdminForm
                             ->required()
                             ->dehydrated(true)
                             ->label('Official Identifier')
-                            ->unique(table: 'known_users', column: 'official_identifier', ignoreRecord: true)
+                            ->unique(
+                                table: 'known_users',
+                                column: 'official_identifier',
+                                ignorable: fn ($livewire): ?\Illuminate\Database\Eloquent\Model => $livewire->record?->knownUser
+                            )
                             ->rules(function (Get $get) {
                                 $method = $get('official_identifier_method');
                                 
@@ -109,7 +113,11 @@ class SubAdminForm
                             ->email()
                             ->required()
                             ->dehydrated(true)
-                            ->unique(table: 'known_users', column: 'email', ignoreRecord: true)
+                            ->unique(
+                                table: 'known_users',
+                                column: 'email',
+                                ignorable: fn ($livewire): ?\Illuminate\Database\Eloquent\Model => $livewire->record?->knownUser
+                            )
                             ->label('Email')
                             ->validationMessages([
                                 'unique' => 'This email address is already registered.',

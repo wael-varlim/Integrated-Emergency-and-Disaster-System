@@ -3,7 +3,8 @@
 namespace App\Filament\Admin\Resources\AuthorityResource\Schemas;
 
 use Filament\Forms;
-use Filament\Schemas\Components as SchemaComponents;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
 class AuthorityForm
@@ -12,46 +13,37 @@ class AuthorityForm
     {
         return $schema
             ->schema([
-                SchemaComponents\Section::make('Authority Name')
-                    ->description('Enter the authority name in English and Arabic')
+                Section::make('Authority Details')
+                    ->description('Enter the authority name in both languages')
                     ->schema([
-                        Forms\Components\TextInput::make('authorityType.type_name')
-                            ->label('Name (English)')
-                            ->required()
-                            ->maxLength(255)
-                            ->dehydrated(true),
-                    ]),
-
-                SchemaComponents\Section::make('Translations')
-                    ->description('Add translations for this authority')
-                    ->schema([
-                        Forms\Components\Repeater::make('authorityType.authorityTranslation')
-                            ->label('')
-                            ->schema([
-                                Forms\Components\Select::make('languahe_code')
-                                    ->label('Language')
-                                    ->options([
-                                        'en' => '🇬🇧 English',
-                                        'ar' => '🇸🇦 Arabic',
-                                    ])
-                                    ->required()
-                                    ->distinct(),
-
-                                Forms\Components\TextInput::make('translation')
-                                    ->label('Translation')
-                                    ->required()
-                                    ->maxLength(255),
+                        Tabs::make('Name Translations')
+                            ->tabs([
+                                Tabs\Tab::make('Arabic')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name.ar')
+                                            ->label('Authority Name (Arabic)')
+                                            ->required()
+                                            ->maxLength(255),
+                                    ]),
+                                
+                                Tabs\Tab::make('English')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name.en')
+                                            ->label('Authority Name (English)')
+                                            ->required()
+                                            ->maxLength(255),
+                                    ]),
                             ])
-                            ->columns(2)
-                            ->addActionLabel('Add Translation')
-                            ->maxItems(2)
-                            ->dehydrated(true)
-                            ->default([
-                                ['languahe_code' => 'en', 'translation' => ''],
-                                ['languahe_code' => 'ar', 'translation' => ''],
-                            ]),
-                    ])
-                    ->collapsible(),
+                            ->columnSpanFull(),
+                        
+                        Forms\Components\Select::make('authority_type_id')
+                            ->label('Authority Type')
+                            ->relationship('authorityType', 'type_name')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 }

@@ -24,4 +24,15 @@ class Notification extends Model
     {
         return $this->belongsTo(Region::class);
     }
+
+    public function notificationTranslations()
+    {
+        return $this->hasMany(NotificationTranslations::class);
+    }
+
+    public function currentTranslation()
+    {
+        return $this->hasOne(NotificationTranslations::class)
+            ->where('language_code', app()->getLocale());
+    }
 }

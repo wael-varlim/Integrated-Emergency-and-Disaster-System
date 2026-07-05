@@ -21,6 +21,18 @@ class NotificationTable
                     ->limit(50)
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('notificationTranslations.language_code')
+                    ->label('Translations')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match($state) {
+                        'en' => '🇬🇧 EN',
+                        'ar' => '🇸🇦 AR',
+                        default => strtoupper($state),
+                    })
+                    ->color('success')
+                    ->separator(',')
+                    ->default('—'),
+
                 Tables\Columns\TextColumn::make('region.city.name')
                     ->label('Region')
                     ->badge()
@@ -38,7 +50,8 @@ class NotificationTable
             ])
             ->recordActions([
                 Actions\ViewAction::make(),
-                // Edit action disabled - notifications cannot be edited
+                Actions\EditAction::make()
+                    ->visible(fn () => auth()->user()?->hasPermissionTo('update_notification')),
                 Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_notification')),
             ])

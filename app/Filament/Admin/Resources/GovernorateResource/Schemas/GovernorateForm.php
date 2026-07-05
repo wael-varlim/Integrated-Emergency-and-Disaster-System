@@ -18,13 +18,21 @@ class GovernorateForm
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->label('Governorate Name'),
+                            ->label('Governorate Name')
+                            ->validationMessages([
+                                'required' => 'The governorate name is required.',
+                                'max' => 'The governorate name must not exceed 255 characters.',
+                            ]),
 
                         Forms\Components\Select::make('region_id')
                             ->label('Region')
                             ->options(Region::all()->pluck('id', 'id'))
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => 'Please select a region.',
+                            ])
+                            ->helperText('Select the region where this governorate is located'),
                     ])
                     ->columns(2),
 
@@ -33,17 +41,22 @@ class GovernorateForm
                         Forms\Components\Repeater::make('governorateTranslation')
                             ->relationship()
                             ->schema([
-                                Forms\Components\Select::make('languahe_code')
+                                Forms\Components\Select::make('language_code')
                                     ->label('Language')
                                     ->options([
                                         'en' => 'English',
                                         'ar' => 'Arabic',
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->distinct()
+                                    ->validationMessages([
+                                        'distinct' => 'Each language can only be added once.',
+                                    ]),
 
                                 Forms\Components\TextInput::make('translation')
                                     ->label('Translation')
-                                    ->required(),
+                                    ->required()
+                                    ->maxLength(255),
                             ])
                             ->columns(2)
                             ->addActionLabel('Add Translation')

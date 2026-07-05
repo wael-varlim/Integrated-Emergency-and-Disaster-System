@@ -15,16 +15,28 @@ class AwarenessArticleTable
             ->columns([
                 Tables\Columns\ImageColumn::make('icon_url')
                     ->label('Icon')
-                    ->disk('public')
-                    ->circular(),
+                    ->getStateUsing(function ($record) {
+                        // Return the URL using url() helper (like Media model)
+                        $iconPath = $record->icon_url;
+                        
+                        if ($iconPath && \Storage::disk('public')->exists($iconPath)) {
+                            return url('/storage/' . $iconPath);
+                        }
+                        // Fallback to default
+                        return url('/storage/awareness-icons/default.svg');
+                    })
+                    ->circular()
+                    ->size(50),
 
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('body')
                     ->limit(50)
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
 
                 Tables\Columns\TextColumn::make('newsType.type_name')
                     ->label('News Type')
