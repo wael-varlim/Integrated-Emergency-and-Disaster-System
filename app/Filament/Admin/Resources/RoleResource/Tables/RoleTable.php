@@ -17,13 +17,14 @@ class RoleTable
                 Tables\Columns\TextColumn::make('name')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'admin'             => 'danger',
-                        'news_manager'      => 'info',
-                        'report_manager'    => 'warning',
-                        'content_manager'   => 'success',
-                        'authority_manager' => 'primary',
-                        'viewer'            => 'gray',
-                        default             => 'secondary',
+                        'admin'                => 'danger',
+                        'posts_manager'        => 'success',
+                        'awareness_manager'    => 'info',
+                        'report_manager'       => 'warning',
+                        'suggestion_manager'   => 'purple',
+                        'authority_manager'    => 'primary',
+                        'viewer'               => 'gray',
+                        default                => 'secondary',
                     })
                     ->searchable(),
 

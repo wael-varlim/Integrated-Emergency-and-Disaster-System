@@ -22,7 +22,12 @@ class AuthorityResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return false;
+        return auth()->user()?->hasAnyPermission([
+            'view_any_authority',
+            'create_authority',
+            'update_authority',
+            'delete_authority',
+        ]) ?? false;
     }
 
     public static function form(Schema $schema): Schema

@@ -55,15 +55,22 @@ class PermissionSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $admin->syncPermissions(Permission::all());
 
-        // 2. News Manager
-        $newsManager = Role::firstOrCreate(['name' => 'news_manager', 'guard_name' => 'web']);
-        $newsManager->syncPermissions([
-            'view_any_news', 'view_news', 'create_news', 'update_news', 'delete_news',
-            'view_any_news_type', 'view_news_type',
+        // 2. Posts Manager (Communication - Posts)
+        $postsManager = Role::firstOrCreate(['name' => 'posts_manager', 'guard_name' => 'web']);
+        $postsManager->syncPermissions([
+            'view_any_post', 'view_post', 'create_post', 'update_post', 'delete_post',
             'view_any_media', 'view_media', 'create_media', 'update_media',
         ]);
 
-        // 3. Report Manager
+        // 3. Awareness Manager (Communication - Awareness Articles)
+        $awarenessManager = Role::firstOrCreate(['name' => 'awareness_manager', 'guard_name' => 'web']);
+        $awarenessManager->syncPermissions([
+            'view_any_awareness_article', 'view_awareness_article',
+            'create_awareness_article', 'update_awareness_article', 'delete_awareness_article',
+            'view_any_media', 'view_media', 'create_media', 'update_media',
+        ]);
+
+        // 4. Report Manager
         $reportManager = Role::firstOrCreate(['name' => 'report_manager', 'guard_name' => 'web']);
         $reportManager->syncPermissions([
             'view_any_report', 'view_report', 'update_report', 'delete_report',
@@ -72,23 +79,20 @@ class PermissionSeeder extends Seeder
             'view_any_city', 'view_city',
         ]);
 
-        // 4. Content Manager
-        $contentManager = Role::firstOrCreate(['name' => 'content_manager', 'guard_name' => 'web']);
-        $contentManager->syncPermissions([
-            'view_any_post', 'view_post', 'create_post', 'update_post', 'delete_post',
-            'view_any_awareness_article', 'view_awareness_article',
-            'create_awareness_article', 'update_awareness_article', 'delete_awareness_article',
-            'view_any_media', 'view_media', 'create_media', 'update_media',
+        // 5. Suggestion Manager
+        $suggestionManager = Role::firstOrCreate(['name' => 'suggestion_manager', 'guard_name' => 'web']);
+        $suggestionManager->syncPermissions([
+            'view_any_suggestion', 'view_suggestion', 'update_suggestion', 'delete_suggestion',
         ]);
 
-        // 5. Authority Manager
+        // 6. Authority Manager (Authorities + Notifications)
         $authorityManager = Role::firstOrCreate(['name' => 'authority_manager', 'guard_name' => 'web']);
         $authorityManager->syncPermissions([
             'view_any_authority', 'view_authority', 'create_authority', 'update_authority', 'delete_authority',
-            'view_any_notification', 'view_notification', 'create_notification',
+            'view_any_notification', 'view_notification', 'create_notification', 'update_notification', 'delete_notification',
         ]);
 
-        // 6. Viewer (read-only)
+        // 7. Viewer (read-only)
         $viewer = Role::firstOrCreate(['name' => 'viewer', 'guard_name' => 'web']);
         $viewer->syncPermissions(
             Permission::where('name', 'like', 'view_%')->pluck('name')->toArray()

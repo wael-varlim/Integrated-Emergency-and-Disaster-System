@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+@import '../../../css/filament/filament/app.css';
+
+/* Lower opacity for dashboard stat cards */
+.fi-wi-stats-overview .fi-wi-stats-overview-stat {
+    opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fi-wi-stats-overview .fi-wi-stats-overview-stat:hover {
+    opacity: 1;
+}
+
+/* Lower opacity for chart widgets */
+.fi-wi-chart {
+    opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fi-wi-chart:hover {
+    opacity: 1;
+}
+
+/* Alternative: Target all dashboard widgets if above doesn't work */
+[data-page="dashboard"] .fi-wi {
+    opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+}
+
+[data-page="dashboard"] .fi-wi:hover {
+    opacity: 1;
+}
+
+/* Specifically target widget cards */
+.fi-section-content-ctn .fi-wi {
+    opacity: 0.7;
+}
+
+.fi-section-content-ctn .fi-wi:hover {
+    opacity: 1;
+}
+

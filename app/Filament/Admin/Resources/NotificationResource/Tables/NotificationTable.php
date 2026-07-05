@@ -38,8 +38,7 @@ class NotificationTable
             ])
             ->recordActions([
                 Actions\ViewAction::make(),
-                Actions\EditAction::make()
-                    ->visible(fn () => auth()->user()?->hasPermissionTo('update_notification')),
+                // Edit action disabled - notifications cannot be edited
                 Actions\DeleteAction::make()
                     ->visible(fn () => auth()->user()?->hasPermissionTo('delete_notification')),
             ])

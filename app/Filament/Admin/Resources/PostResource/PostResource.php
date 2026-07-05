@@ -33,13 +33,15 @@ class PostResource extends Resource
                 Section::make('Post Details')
                     ->schema([
                         TextEntry::make('title'),
-                        TextEntry::make('owner_role'),
+                        TextEntry::make('by_admin')
+                            ->label('Created by Admin')
+                            ->badge()
+                            ->color(fn ($state) => $state ? 'success' : 'gray')
+                            ->formatStateUsing(fn ($state) => $state ? 'Yes' : 'No'),
                     ]),
-                Section::make('Information')
+                Section::make('News Information')
                     ->schema([
                         TextEntry::make('news.body')->label('News Body'),
-                        TextEntry::make('news.address.city.name')->label('City'),
-                        TextEntry::make('news.address.street')->label('Street'),
                     ]),
                 Section::make('Notification Details')
                     ->schema([

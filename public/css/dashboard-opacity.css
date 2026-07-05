@@ -1,0 +1,63 @@
+/* Dashboard Widget Opacity Customization */
+
+/* Lower opacity for dashboard stat cards */
+.fi-wi-stats-overview .fi-wi-stats-overview-stat {
+    opacity: 0.7 !important;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fi-wi-stats-overview .fi-wi-stats-overview-stat:hover {
+    opacity: 1 !important;
+}
+
+/* Lower opacity for chart widgets */
+.fi-wi-chart {
+    opacity: 0.7 !important;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fi-wi-chart:hover {
+    opacity: 1 !important;
+}
+
+/* Alternative: Target all dashboard widgets */
+[data-page="dashboard"] .fi-wi {
+    opacity: 0.7 !important;
+    transition: opacity 0.3s ease-in-out;
+}
+
+[data-page="dashboard"] .fi-wi:hover {
+    opacity: 1 !important;
+}
+
+/* ============================================ */
+/* TEXT COLOR CUSTOMIZATION */
+/* ============================================ */
+
+/* Stat Card Title/Number Color (e.g., "98") */
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-value {
+    color: #002623 !important; /* Your primary dark teal color */
+}
+
+/* Stat Card Label Color (e.g., "Total Reports") */
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-label {
+    color: #b9a77a !important; /* Your gold/tan color */
+}
+
+/* Stat Card Description Color (e.g., "Total reports submitted") */
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description {
+    color: #6b7280 !important; /* Gray color for descriptions */
+}
+
+/* Dark mode adjustments */
+.dark .fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-value {
+    color: #b9a77a !important; /* Gold in dark mode */
+}
+
+.dark .fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-label {
+    color: #e5e7eb !important; /* Light gray in dark mode */
+}
+
+.dark .fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description {
+    color: #9ca3af !important; /* Medium gray in dark mode */
+}

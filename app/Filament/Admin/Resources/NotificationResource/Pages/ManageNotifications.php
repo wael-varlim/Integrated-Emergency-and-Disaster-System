@@ -13,8 +13,7 @@ class ManageNotifications extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->visible(fn () => auth()->user()?->hasPermissionTo('create_notification')),
+            // Create action disabled - notifications are created automatically with posts
         ];
     }
 }
