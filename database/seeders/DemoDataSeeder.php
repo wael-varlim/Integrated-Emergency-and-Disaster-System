@@ -8,6 +8,7 @@ use App\Models\Authority;
 use App\Models\AuthorityTranslation;
 use App\Models\AuthorityType;
 use App\Models\AwarenessArticle;
+use App\Models\AwarenessArticleTranslation;
 use App\Models\City;
 use App\Models\KnownUser;
 use App\Models\MediaType;
@@ -409,21 +410,95 @@ class DemoDataSeeder extends Seeder
 
         // ─────────── 7. Create 6 awareness articles ───────────
         $articleData = [
-            ['Earthquake Preparedness Guide', 'Learn how to prepare for earthquakes and stay safe during seismic events. This guide covers emergency kits, evacuation plans, and safety procedures.'],
-            ['First Aid Basics', 'Essential first aid techniques for emergency situations including wound care, CPR, and treating burns.'],
-            ['Flood Safety Tips', 'Important safety measures to take before, during, and after flooding. Includes information on evacuation routes and emergency supplies.'],
-            ['Fire Prevention and Safety', 'Comprehensive guide on preventing fires at home and work, plus what to do if a fire breaks out.'],
-            ['Heatwave Survival Guide', 'How to stay safe during extreme heat conditions. Covers hydration, cooling centers, and heat-related illness recognition.'],
-            ['Winter Storm Preparedness', 'Prepare for winter storms with tips on heating, insulation, emergency supplies, and travel safety.'],
+            [
+                'translations' => [
+                    'en' => [
+                        'title' => 'Earthquake Preparedness Guide',
+                        'body' => 'Learn how to prepare for earthquakes and stay safe during seismic events. This guide covers emergency kits, evacuation plans, and safety procedures.',
+                    ],
+                    'ar' => [
+                        'title' => 'دليل الاستعداد للزلازل',
+                        'body' => 'تعلم كيفية الاستعداد للزلازل والبقاء آمنًا أثناء الأحداث الزلزالية. يغطي هذا الدليل مجموعات الطوارئ وخطط الإخلاء وإجراءات السلامة.',
+                    ],
+                ],
+            ],
+            [
+                'translations' => [
+                    'en' => [
+                        'title' => 'First Aid Basics',
+                        'body' => 'Essential first aid techniques for emergency situations including wound care, CPR, and treating burns.',
+                    ],
+                    'ar' => [
+                        'title' => 'أساسيات الإسعافات الأولية',
+                        'body' => 'تقنيات الإسعافات الأولية الأساسية لحالات الطوارئ بما في ذلك رعاية الجروح والإنعاش القلبي الرئوي وعلاج الحروق.',
+                    ],
+                ],
+            ],
+            [
+                'translations' => [
+                    'en' => [
+                        'title' => 'Flood Safety Tips',
+                        'body' => 'Important safety measures to take before, during, and after flooding. Includes information on evacuation routes and emergency supplies.',
+                    ],
+                    'ar' => [
+                        'title' => 'نصائح السلامة من الفيضانات',
+                        'body' => 'إجراءات السلامة الهامة التي يجب اتخاذها قبل وأثناء وبعد الفيضانات. تشمل معلومات عن طرق الإخلاء ومستلزمات الطوارئ.',
+                    ],
+                ],
+            ],
+            [
+                'translations' => [
+                    'en' => [
+                        'title' => 'Fire Prevention and Safety',
+                        'body' => 'Comprehensive guide on preventing fires at home and work, plus what to do if a fire breaks out.',
+                    ],
+                    'ar' => [
+                        'title' => 'الوقاية من الحرائق والسلامة',
+                        'body' => 'دليل شامل حول الوقاية من الحرائق في المنزل والعمل، بالإضافة إلى ما يجب فعله في حالة نشوب حريق.',
+                    ],
+                ],
+            ],
+            [
+                'translations' => [
+                    'en' => [
+                        'title' => 'Heatwave Survival Guide',
+                        'body' => 'How to stay safe during extreme heat conditions. Covers hydration, cooling centers, and heat-related illness recognition.',
+                    ],
+                    'ar' => [
+                        'title' => 'دليل النجاة من موجات الحر',
+                        'body' => 'كيفية البقاء آمنًا خلال ظروف الحرارة الشديدة. يغطي الترطيب ومراكز التبريد والتعرف على الأمراض المرتبطة بالحرارة.',
+                    ],
+                ],
+            ],
+            [
+                'translations' => [
+                    'en' => [
+                        'title' => 'Winter Storm Preparedness',
+                        'body' => 'Prepare for winter storms with tips on heating, insulation, emergency supplies, and travel safety.',
+                    ],
+                    'ar' => [
+                        'title' => 'الاستعداد للعواصف الشتوية',
+                        'body' => 'استعد للعواصف الشتوية مع نصائح حول التدفئة والعزل ومستلزمات الطوارئ وسلامة السفر.',
+                    ],
+                ],
+            ],
         ];
 
-        foreach ($articleData as $i => [$title, $body]) {
-            AwarenessArticle::create([
-                'title'        => $title,
-                'body'         => $body,
+        foreach ($articleData as $i => $data) {
+            $article = AwarenessArticle::create([
                 'icon_url'     => 'awareness-icons/default.svg',
                 'news_type_id' => $newsTypes[$i % $newsTypes->count()]->id,
             ]);
+
+            // Create translations
+            foreach ($data['translations'] as $languageCode => $translation) {
+                AwarenessArticleTranslation::create([
+                    'awareness_article_id' => $article->id,
+                    'language_code'        => $languageCode,
+                    'title'                => $translation['title'],
+                    'body'                 => $translation['body'],
+                ]);
+            }
         }
 
         $this->command->info('6 awareness articles created');

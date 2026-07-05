@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('awareness_articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-            $table->text('body')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
             $table->text('icon_url');
             $table->foreignId('news_type_id')->constrained('news_types')->cascadeOnDelete();
             $table->timestamps();

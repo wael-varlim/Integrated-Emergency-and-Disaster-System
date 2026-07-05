@@ -13,27 +13,50 @@ class AwarenessArticleForm
     {
         return $schema
             ->schema([
-                SchemaComponents\Section::make('Article Details')
+                SchemaComponents\Tabs::make('Translations')
+                    ->tabs([
+                        SchemaComponents\Tabs\Tab::make('English')
+                            ->schema([
+                                Forms\Components\TextInput::make('translations.en.title')
+                                    ->label('Title (English)')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->validationMessages([
+                                        'required' => 'The English title is required.',
+                                    ]),
+
+                                Forms\Components\Textarea::make('translations.en.body')
+                                    ->label('Body (English)')
+                                    ->required()
+                                    ->rows(6)
+                                    ->validationMessages([
+                                        'required' => 'The English body is required.',
+                                    ]),
+                            ]),
+
+                        SchemaComponents\Tabs\Tab::make('Arabic')
+                            ->schema([
+                                Forms\Components\TextInput::make('translations.ar.title')
+                                    ->label('Title (Arabic)')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->validationMessages([
+                                        'required' => 'The Arabic title is required.',
+                                    ]),
+
+                                Forms\Components\Textarea::make('translations.ar.body')
+                                    ->label('Body (Arabic)')
+                                    ->required()
+                                    ->rows(6)
+                                    ->validationMessages([
+                                        'required' => 'The Arabic body is required.',
+                                    ]),
+                            ]),
+                    ])
+                    ->columnSpanFull(),
+
+                SchemaComponents\Section::make('Additional Information')
                     ->schema([
-                        Forms\Components\TextInput::make('title')
-                            ->required()
-                            ->maxLength(255)
-                            ->label('Title')
-                            ->columnSpanFull()
-                            ->validationMessages([
-                                'required' => 'The article title is required.',
-                                'max' => 'The title must not exceed 255 characters.',
-                            ]),
-
-                        Forms\Components\Textarea::make('body')
-                            ->required()
-                            ->rows(6)
-                            ->label('Body')
-                            ->columnSpanFull()
-                            ->validationMessages([
-                                'required' => 'The article body is required.',
-                            ]),
-
                         Forms\Components\Select::make('news_type_id')
                             ->label('News Type')
                             ->options(NewsType::all()->pluck('type_name', 'id'))

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AwarenessArticleController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\testController;
 use App\Http\Middleware\RefreshTokenMiddleware;
 use App\Http\Middleware\SetContentLanguageMiddleware;
@@ -24,6 +26,22 @@ Route::post('/otp/verify',   [AuthController::class, 'verifyOtp']);
 Route::post('/register',   [AuthController::class, 'register']);
 Route::post('/login',   [AuthController::class, 'login']);
 
+/// Public Routes (No CSRF required)
+Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
+    Route::prefix('suggestions')->group(function () {
+        Route::post('/', [SuggestionController::class, 'store']); 
+    });
+
+    Route::prefix('awareness-articles')->group(function () {
+        Route::get('/', [AwarenessArticleController::class, 'index']); 
+        Route::get('/{id}', [AwarenessArticleController::class, 'show']); 
+    });
+
+    Route::prefix('posts')->group(function () {
+        Route::get('/', [PostController::class, 'index']); 
+    });
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
     Route::get('/posts/location', [PostController::class, 'showPostsLocation']);
@@ -39,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/normal', [PostController::class, 'showNormalPosts']); 
             Route::get('/admin', [PostController::class, 'showAdminPosts']); 
         });
+      
     });
 });
 

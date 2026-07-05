@@ -2,64 +2,80 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\ApiResponseTrait;
+use App\Http\Requests\Suggestion\StoreSuggestionRequest;
 use App\Models\Suggestion;
+use App\Services\SuggestionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SuggestionController extends Controller
 {
+    use ApiResponseTrait;
+
+    public function __construct(
+        protected SuggestionService $suggestionService
+    ) {}
+
     /**
-     * Display a listing of the resource.
+     * Store a newly created suggestion in storage.
      */
-    public function index()
+    public function store(StoreSuggestionRequest $request): JsonResponse
     {
-        //
+        $data = $request->validated();
+
+        $suggestion = $this->suggestionService->createSuggestion($data);
+
+        return $this->apiResponse(
+            [
+                'suggestion' => $suggestion,
+            ],
+            __('suggestion.created_successfully'),
+            201
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of all suggestions.
      */
-    public function create()
+    public function index(): JsonResponse
     {
-        //
+        $suggestions = $this->suggestionService->getAllSuggestions();
+
+        return $this->apiResponse(
+            [
+                'suggestions' => $suggestions,
+            ],
+            __('suggestion.fetched_successfully'),
+            200
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display the specified suggestion.
      */
-    public function store(Request $request)
+    public function show(Suggestion $suggestion): JsonResponse
     {
-        //
+        return $this->apiResponse(
+            [
+                'suggestion' => $suggestion,
+            ],
+            __('suggestion.fetched_successfully'),
+            200
+        );
     }
 
     /**
-     * Display the specified resource.
+     * Mark suggestion as read by admin.
      */
-    public function show(Suggestion $suggestion)
+    public function markAsRead(int $id): JsonResponse
     {
-        //
-    }
+        $this->suggestionService->markAsRead($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Suggestion $suggestion)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Suggestion $suggestion)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Suggestion $suggestion)
-    {
-        //
+        return $this->apiResponse(
+            null,
+            __('suggestion.marked_as_read'),
+            200
+        );
     }
 }

@@ -16,27 +16,31 @@ class AwarenessArticleTable
                 Tables\Columns\ImageColumn::make('icon_url')
                     ->label('Icon')
                     ->getStateUsing(function ($record) {
-                        // Return the URL using url() helper (like Media model)
                         $iconPath = $record->icon_url;
                         
                         if ($iconPath && \Storage::disk('public')->exists($iconPath)) {
                             return url('/storage/' . $iconPath);
                         }
-                        // Fallback to default
                         return url('/storage/awareness-icons/default.svg');
                     })
                     ->circular()
                     ->size(50),
 
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable()
-                    ->sortable()
+                Tables\Columns\TextColumn::make('title_en')
+                    ->label('Title (EN)')
+                    ->getStateUsing(function ($record) {
+                        $translation = $record->translations->firstWhere('language_code', 'en');
+                        return $translation?->title ?? 'N/A';
+                    })
                     ->weight('bold'),
 
-                Tables\Columns\TextColumn::make('body')
-                    ->limit(50)
-                    ->searchable()
-                    ->wrap(),
+                Tables\Columns\TextColumn::make('title_ar')
+                    ->label('Title (AR)')
+                    ->getStateUsing(function ($record) {
+                        $translation = $record->translations->firstWhere('language_code', 'ar');
+                        return $translation?->title ?? 'N/A';
+                    })
+                    ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('newsType.type_name')
                     ->label('News Type')

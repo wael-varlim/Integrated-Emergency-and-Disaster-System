@@ -18,24 +18,16 @@ class AwarenessArticleInfolist
                         ImageEntry::make('icon_url')
                             ->label('Icon')
                             ->getStateUsing(function ($record) {
-                                // Return the full URL using url() helper (like Media model)
                                 $iconPath = $record->icon_url;
                                 
                                 if ($iconPath && \Storage::disk('public')->exists($iconPath)) {
-                                    // Generate URL using url() helper instead of Storage::url()
                                     return url('/storage/' . $iconPath);
                                 }
-                                // Fallback to default
                                 return url('/storage/awareness-icons/default.svg');
                             })
                             ->height(150)
                             ->width(150)
                             ->extraImgAttributes(['class' => 'rounded-lg shadow-md']),
-                        
-                        TextEntry::make('title')
-                            ->label('Title')
-                            ->weight('bold')
-                            ->columnSpanFull(),
                         
                         TextEntry::make('newsType.type_name')
                             ->label('News Type')
@@ -52,10 +44,44 @@ class AwarenessArticleInfolist
                     ])
                     ->columns(2),
 
-                Section::make('Article Content')
+                Section::make('English Translation')
                     ->schema([
-                        TextEntry::make('body')
-                            ->label('Body')
+                        TextEntry::make('title_en')
+                            ->label('Title (English)')
+                            ->getStateUsing(function ($record) {
+                                $translation = $record->translations->firstWhere('language_code', 'en');
+                                return $translation?->title ?? 'N/A';
+                            })
+                            ->weight('bold')
+                            ->columnSpanFull(),
+                        
+                        TextEntry::make('body_en')
+                            ->label('Body (English)')
+                            ->getStateUsing(function ($record) {
+                                $translation = $record->translations->firstWhere('language_code', 'en');
+                                return $translation?->body ?? 'N/A';
+                            })
+                            ->columnSpanFull()
+                            ->markdown(),
+                    ]),
+
+                Section::make('Arabic Translation')
+                    ->schema([
+                        TextEntry::make('title_ar')
+                            ->label('Title (Arabic)')
+                            ->getStateUsing(function ($record) {
+                                $translation = $record->translations->firstWhere('language_code', 'ar');
+                                return $translation?->title ?? 'N/A';
+                            })
+                            ->weight('bold')
+                            ->columnSpanFull(),
+                        
+                        TextEntry::make('body_ar')
+                            ->label('Body (Arabic)')
+                            ->getStateUsing(function ($record) {
+                                $translation = $record->translations->firstWhere('language_code', 'ar');
+                                return $translation?->body ?? 'N/A';
+                            })
                             ->columnSpanFull()
                             ->markdown(),
                     ]),

@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\AwarenessArticleResource\Pages;
 
 use App\Filament\Admin\Resources\AwarenessArticleResource\AwarenessArticleResource;
+use App\Models\AwarenessArticleTranslation;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -12,19 +13,55 @@ class EditAwarenessArticle extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        // Ensure icon_url is properly formatted for FileUpload component
-        // FileUpload uses Storage::url() which depends on APP_URL
-        // We don't need to transform it here - Filament handles it
-        // But we verify the file exists
+        // Load translations and format for the form
+        $translations = $this->record->translations;
+        
+        foreach ($translations as $translation) {
+            $data['translations'][$translation->language_code] = [
+                'title' => $translation->title,
+                'body' => $translation->body,
+            ];
+        }
+        
+        // Ensure icon_url is properly formatted
         if (isset($data['icon_url'])) {
-            // Check if file exists in storage
             if (!\Storage::disk('public')->exists($data['icon_url'])) {
-                // If file doesn't exist, set to null so FileUpload shows empty
                 $data['icon_url'] = null;
             }
         }
         
         return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Extract translations
+        $translations = $data['translations'] ?? [];
+        unset($data['translations']);
+        
+        // Store translations temporarily
+        $this->translations = $translations;
+        
+        return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        // Update translations
+        if (isset($this->translations)) {
+            foreach ($this->translations as $languageCode => $translation) {
+                AwarenessArticleTranslation::updateOrCreate(
+                    [
+                        'awareness_article_id' => $this->record->id,
+                        'language_code' => $languageCode,
+                    ],
+                    [
+                        'title' => $translation['title'] ?? '',
+                        'body' => $translation['body'] ?? '',
+                    ]
+                );
+            }
+        }
     }
 
     protected function getHeaderActions(): array

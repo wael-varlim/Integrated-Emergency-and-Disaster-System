@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Http\Controllers\Traits\ApiResponseTrait;
 use App\Http\Resources\AdminPostResource;
+use App\Http\Resources\AllPostResource;
 use App\Http\Resources\NormalPostResource;
 use App\Http\Resources\PostCollection;
 use App\Models\News;
@@ -19,6 +20,43 @@ class PostService
 {
     use ApiResponseTrait;
 
+
+    public function getAllPosts()
+    {
+        $posts = Post::with([
+                'postTranslations',
+                'currentTranslation:id,post_id,translation',
+                'news:id,address_id',
+                'news.newsTranslations',
+                'news.currentTranslation:id,news_id,translation',
+                'news.newsType:id,type_name',
+                'news.newsType.currentTranslation:id,news_type_id,translation',
+                'news.address:id,street,city_id',
+                'news.address.currentTranslation:id,address_id,translation',
+                'news.address.city:id,governorate_id',
+                'news.address.city.currentTranslation:id,city_id,translation',
+                'news.address.city.governorate.currentTranslation:id,governorate_id,translation',
+                'news.media' => function ($query) {
+                    $query->select('id', 'model_id', 'media_url')
+                        ->where('media_type_id', 1);
+                },
+                'news.report' => function ($q) {
+                    $q->selectRaw(
+                        'news_id,
+                        ST_X(location) as longitude,
+                        ST_Y(location) as latitude'
+                    );
+                },
+            ])
+            ->latest()
+            ->paginate(12);
+
+        return (new PostCollection($posts, AllPostResource::class))
+            ->additional([
+                'message' => __('posts.fetched_successfully'),
+                'status' => 200,
+            ]);
+    }
 
     public function getNormalPosts(Request $request)
     {

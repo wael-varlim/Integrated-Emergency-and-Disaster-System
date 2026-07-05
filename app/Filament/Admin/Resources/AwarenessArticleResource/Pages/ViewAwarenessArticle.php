@@ -10,6 +10,14 @@ class ViewAwarenessArticle extends ViewRecord
 {
     protected static string $resource = AwarenessArticleResource::class;
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Eager load translations
+        $this->record->load(['translations', 'newsType']);
+        
+        return $data;
+    }
+
     protected function getHeaderActions(): array
     {
         return [
