@@ -7,7 +7,6 @@ use App\Models\MediaType;
 use App\Models\News;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class MediaService
 {

@@ -10,7 +10,6 @@ use App\Models\KnownUser;
 use App\Models\News;
 use App\Models\NewsType;
 use App\Models\Report;
-use Brick\Math\BigInteger;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -46,7 +45,7 @@ class ReportService
         $reportData["street"] = $location["street"];
         $reportData["street_translations"] = $location["street_translations"];
 
-        $reportModel = $this->storeReportRecord($reportData, $knownUser, $mediaPath, $mediaMime, $reportData["media"]);
+        $reportModel = $this->storeReportRecord($reportData, $knownUser, $mediaPath, $mediaMime, $reportData["media"] ?? null);
 
         $reportData = $this->getReport($reportModel->id);
 
@@ -58,7 +57,7 @@ class ReportService
 
 
     private function storeReportRecord(array $reportData, KnownUser $knownUser,
-            ?string $mediaPath, ?string $mediaMime, UploadedFile $file)
+            ?string $mediaPath, ?string $mediaMime, ?UploadedFile $file)
     {
         return DB::transaction(function () use ($reportData, $knownUser, $mediaPath, $mediaMime, $file) 
         {
