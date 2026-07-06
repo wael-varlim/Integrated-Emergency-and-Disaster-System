@@ -291,13 +291,14 @@ class DemoDataSeeder extends Seeder
                 'https://images.unsplash.com/photo-1572648414902-be106c6c826e?w=800',
             ];
 
-            // OPTIMIZED: Skip slow image downloads - just reference URLs directly
             $random = rand(1, 3);
             if($random == 1)
             {
-                // Use Unsplash URL directly instead of downloading
+                $contents = file_get_contents($mediaImages[$i % count($mediaImages)]);
+                Storage::disk('public')->put("images/seeder/seed_{$i}.jpg", $contents);
+
                 $news->media()->create([
-                    'media_url'     => $mediaImages[$i % count($mediaImages)],
+                    'media_url'     => "images/seeder/seed_{$i}.jpg",
                     'media_type_id' => $random,
                 ]);
             }
