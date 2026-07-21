@@ -6,6 +6,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\testController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\RefreshTokenMiddleware;
 use App\Http\Middleware\SetContentLanguageMiddleware;
 use App\Mail\OtpMail;
@@ -41,11 +42,14 @@ Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
         Route::get('/', [PostController::class, 'index']); 
     });
 });
-
+//all APIs that needs auth
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
     Route::get('/posts/location', [PostController::class, 'showPostsLocation']);
 
+    Route::patch('user/language', [UserController::class, 'updateLanguage']);
+
+    //reports and posts (needs langauge)
     Route::middleware(SetContentLanguageMiddleware::class)->group(function () {
         Route::prefix('reports')->group(function () {
             Route::post('/', [ReportController::class, 'store']); 
