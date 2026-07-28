@@ -104,7 +104,7 @@ class AuthService
             return $this->apiResponse(null, 'Unauthorized', 403);
         
         if(! $knownUser -> is_verified)
-            return $this->apiResponse(null, 'unverified account', 403);
+            return $this->apiResponse(null, 'unverified account', 409);
 
         $token = $user->createToken('mobile_user')->plainTextToken;
         return $this->apiResponse(['token' => $token, 'user' => new UserResource($knownUser)], 'login Successfully', 200);

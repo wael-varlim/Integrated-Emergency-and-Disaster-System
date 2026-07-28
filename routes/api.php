@@ -47,7 +47,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);
     Route::get('/posts/location', [PostController::class, 'showPostsLocation']);
 
-    Route::patch('user/language', [UserController::class, 'updateLanguage']);
+    Route::patch('/user/language', [UserController::class, 'updateLanguage']);
+    Route::patch('/user/region', [UserController::class, 'updateRegionPreferences']);
+    Route::post('/user/fcm', [UserController::class, 'storeFcmToken']);
 
     //reports and posts (needs langauge)
     Route::middleware(SetContentLanguageMiddleware::class)->group(function () {

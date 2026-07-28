@@ -6,6 +6,8 @@ namespace App\Providers;
 use App\Auth\AdminUserProvider;
 use App\Models\Report;
 use App\Policies\ReportPolicy;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -15,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     //  Move to register() instead of boot()
     public function register(): void
     {
+        $this->app->bind(ClientInterface::class, Client::class);
+
         Auth::provider("admin-provider", function ($app, array $config) {
             return new AdminUserProvider($app["hash"], $config["model"]);
         });

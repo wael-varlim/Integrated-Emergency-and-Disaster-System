@@ -93,12 +93,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(AnonymousUser::class);
     }
 
-    public function fcmToken()
+    public function fcmTokens()
     {
         return $this->hasMany(FcmToken::class);
     }
 
-    public function region()
+    public function regions()
     {
         return $this->belongsToMany(Region::class, 'user_region_preferences');
     }

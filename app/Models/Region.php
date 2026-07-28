@@ -12,7 +12,7 @@ class Region extends Model
         return $this->hasMany(Notification::class);
     }
 
-    public function user()
+    public function users()
     {
         return $this->belongsToMany(User::class, 'user_region_preferences');
     }

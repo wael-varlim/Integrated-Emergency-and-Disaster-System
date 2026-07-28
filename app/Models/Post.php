@@ -11,7 +11,10 @@ class Post extends Model
         'news_id',
         'by_admin'
     ];
-
+    
+    protected $dispatchesEvents = [
+        'created' => \App\Events\PostCreated::class,
+    ];
 
 
     public function news()

@@ -24,6 +24,11 @@ class NewsType extends Model
     {
         return $this->hasMany(NewsTypeTranslation::class);
     }
+    public function arabicTranslation()
+    {
+        return $this->hasOne(NewsTypeTranslation::class)
+            ->where('language_code', 'ar');
+    }
 
     public function awarenessArticle()
     {
