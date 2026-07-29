@@ -63,7 +63,7 @@ class DemoDataSeeder extends Seeder
         foreach ($fakerNames as $i => [$first, $last]) {
             $user = User::create(['user_type' => 'Known user']);
             $user->assignRole('mobile_user');
-            $user->region()->attach($regionIds[array_rand($regionIds)]);
+            $user->regions()->attach($regionIds[array_rand($regionIds)]);
 
             $knownUser = $user->knownUser()->create([
                 'first_name'                 => $first,
