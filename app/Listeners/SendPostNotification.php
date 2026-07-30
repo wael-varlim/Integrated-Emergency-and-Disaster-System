@@ -23,7 +23,11 @@ class SendPostNotification implements ShouldQueue
      */
     public function handle(PostCreated $event): void
     {
-        $post = $event->post->loadMissing(['news.newsType.arabicTranslation', 'news.address.city.governorate']);
+        $post = $event->post->loadMissing([
+            'news.newsType.arabicTranslation',
+            'news.address.city.governorate',
+            'news.knownUser',
+        ]);
 
         Log::info('PostCreated listener fired', ['post_id' => $post->id, 'by_admin' => $post->by_admin]);
 
@@ -40,7 +44,10 @@ class SendPostNotification implements ShouldQueue
 
     private function notifyEveryone($post): void
     {
+        $creatorId = $post->news?->knownUser?->user_id;
+
         User::whereIn('user_type', ['Known user'])
+            ->when($creatorId, fn ($query) => $query->where('id', '!=', $creatorId))
             ->with('fcmTokens')
             ->chunkById(200, function ($users) use ($post) {
                 foreach ($this->groupByLanguage($users) as $lang => $usersInLang) {
