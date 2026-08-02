@@ -77,7 +77,7 @@ class AuthService
         ]);
         $user->assignRole('mobile_user');
 
-        $user->region()->attach($regionId);
+        $user->regions()->attach($regionId);
 
         $knownUser  = $user->knownUser()->create([
             'first_name'                 => $request->first_name,
