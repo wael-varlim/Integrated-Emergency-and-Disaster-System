@@ -14,6 +14,13 @@ class City extends Model
 
 
 
+
+    public function arabicTranslation()
+    {
+        return $this->hasOne(CityTranslation::class)
+            ->where('language_code', 'ar');
+    }
+
     public function cityTranslation()
     {
         return $this->hasMany(CityTranslation::class);

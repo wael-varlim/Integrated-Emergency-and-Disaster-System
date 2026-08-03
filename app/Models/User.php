@@ -22,7 +22,7 @@ class User extends Authenticatable implements FilamentUser
 
     protected $fillable = [
         'user_type',
-        'preferred_language ',
+        'preferred_language',
     ];
 
     protected $hidden = [

@@ -23,6 +23,12 @@ class Address extends Model
         return $this->hasMany(News::class);
     }
 
+    public function arabicTranslation()
+    {
+        return $this->hasOne(AddressTranslation::class)
+            ->where('language_code', 'ar');
+    }
+
     public function addressTranslation()
     {
         return $this->hasMany(AddressTranslation::class);

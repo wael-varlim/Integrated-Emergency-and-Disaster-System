@@ -13,6 +13,12 @@ class Governorate extends Model
 
 
 
+    public function arabicTranslation()
+    {
+        return $this->hasOne(GovernorateTranslation::class)
+            ->where('language_code', 'ar');
+    }
+
     public function governorateTranslation()
     {
         return $this->hasMany(GovernorateTranslation::class);

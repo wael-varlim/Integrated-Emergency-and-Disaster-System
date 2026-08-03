@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SendPostNotification implements ShouldQueue
 {
@@ -26,6 +27,10 @@ class SendPostNotification implements ShouldQueue
         $post = $event->post->loadMissing([
             'news.newsType.arabicTranslation',
             'news.address.city.governorate',
+            'news.address.arabicTranslation',
+            'news.address.city.arabicTranslation',
+            'news.address.city.governorate.arabicTranslation',
+            'news.report',
             'news.knownUser',
         ]);
 
@@ -46,7 +51,7 @@ class SendPostNotification implements ShouldQueue
     {
         $creatorId = $post->news?->knownUser?->user_id;
 
-        User::whereIn('user_type', ['Known user'])
+        User::whereIn('user_type', ['Known user', 'Anonymous user'])
             ->when($creatorId, fn ($query) => $query->where('id', '!=', $creatorId))
             ->with('fcmTokens')
             ->chunkById(200, function ($users) use ($post) {
@@ -97,7 +102,33 @@ class SendPostNotification implements ShouldQueue
 
     private function groupByLanguage($users)
     {
-        return $users->groupBy(fn ($user) => $user->notification_lang ?? 'ar');
+        return $users->groupBy(fn ($user) => $user->preferred_language ?? 'ar');
+    }
+
+    private function resolveImageUrl($post)
+    {
+        $media = $post->news?->media?->first();
+        if (!$media->media_url) 
+        {
+            return null;
+        }
+            
+        if (!$media->firstWhere('media_type_id', 1)) 
+        {
+            return null;
+        }
+
+        $url = $media->media_url;
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) 
+        {
+            return $url;
+        }
+
+        $final_url = asset('' . $url);
+        Log::info($final_url);
+
+        return $final_url;
     }
 
     private function sendBatched($tokens, $post, string $lang): void
@@ -110,33 +141,45 @@ class SendPostNotification implements ShouldQueue
 
         [$title, $body] = $this->buildContent($post, $lang);
         $data = $this->buildNotificationData($post);
+        $imageUrl = $this->resolveImageUrl($post);
 
         foreach ($tokens->chunk(500) as $chunk) {
-            $this->notificationService->sendToTokens($chunk->toArray(), $title, $body, $data);
+            $this->notificationService->sendToTokens($chunk->toArray(), $title, $body, $data, $imageUrl);
         }
+    }
+
+
+
+    private function localize($model, string $lang, ?string $englishValue): ?string
+    {
+        if (!$model) {
+            return null;
+        }
+        //Log::info(['ar' => $model->arabicTranslation?->translation, 'en' => $englishValue]);
+        
+        return $lang === 'en'
+            ? $englishValue
+            : ($model->arabicTranslation?->translation ?? $englishValue);
     }
 
     private function buildContent($post, string $lang): array
     {
-        $report = $post->news?->report;
         $types = $post->news?->newsType ?? collect();
 
         $title = $types
-            ->map(function ($type) use ($lang) {
-                if ($lang === 'en') {
-                    return $type->type_name;
-                }
-
-                return $type->arabicTranslation?->translation ?? $type->type_name;
-            })
+            ->map(fn ($type) => $lang === 'en'
+                ? $type->type_name
+                : ($type->arabicTranslation?->translation ?? $type->type_name))
             ->implode(', ');
 
-        $address = $report?->news?->address;
+        $address = $post->news?->address;
+        $city = $address?->city;
+        $governorate = $city?->governorate;
 
         $body = collect([
-            $address?->city?->governorate?->name,
-            $address?->city?->name,
-            $address?->street,
+            $this->localize($governorate, $lang, $governorate?->name),
+            $this->localize($city, $lang, $city?->name),
+            $this->localize($address, $lang, $address?->street),
         ])->filter()->implode(', ');
 
         return [$title, $body];
@@ -145,10 +188,14 @@ class SendPostNotification implements ShouldQueue
     private function buildNotificationData($post): array
     {
         $typeCodes = $post->news?->newsType?->pluck('slug')->filter()->values()->toArray() ?? [];
+        $longitude = $post->news?->report?->longitude;
+        $latitude = $post->news?->report?->latitude;
 
         return [
             'post_id' => (string) $post->id,
             'type_codes' => implode(',', $typeCodes),
+            'latitude' => (string) $latitude,
+            'longitude' => (string) $longitude,
         ];
     }
 }

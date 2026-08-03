@@ -46,12 +46,10 @@ class BasePostResource extends JsonResource
             return null;
         }
         
-        // If URL already starts with http:// or https://, return as is
         if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
             return $url;
         }
         
-        // Otherwise, it's a local storage path
         return asset('storage/' . $url);
     }
 

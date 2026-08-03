@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\AndroidConfig;
 
 class NotificationService
 {
@@ -16,11 +17,25 @@ class NotificationService
 
     public function __construct(private Messaging $messaging) {}
 
-    public function sendToTokens(array $tokens, string $title, string $body, array $data = []): void
+    public function sendToTokens(array $tokens, string $title, string $body, array $data = [], ?string $imageUrl = null): void
     {
+        $notification = $imageUrl
+            ? FirebaseNotification::create($title, $body, $imageUrl)
+            : FirebaseNotification::create($title, $body);
+
         $message = CloudMessage::new()
-            ->withNotification(FirebaseNotification::create($title, $body))
-            ->withData($data);
+            ->withNotification($notification)
+            ->withData($data)
+            ->withAndroidConfig(AndroidConfig::fromArray([
+                'priority' => 'high',
+                'notification' => [
+                    'channel_id' => 'high_importance_channel',
+                    'icon' => 'ic_notification',
+                    'color' => '#1B4343',
+                    'sound' => 'default',
+                    'notification_priority' => 'PRIORITY_MAX',
+                ],
+            ]));
 
         $report = $this->messaging->sendMulticast($message, $tokens);
 
