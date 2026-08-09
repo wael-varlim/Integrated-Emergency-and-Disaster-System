@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('authorities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->geography('location', 'point');
+            $table->spatialIndex('location');
             $table->foreignId('authority_type_id')->constrained('authority_types');
             $table->timestamps();
         });
