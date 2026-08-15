@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Authority extends Model
 {
+
+    protected $hidden = ['location'];
+
     protected $fillable = [
         'name',
         'authority_type_id'

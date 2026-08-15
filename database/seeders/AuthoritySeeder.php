@@ -364,7 +364,7 @@ class AuthoritySeeder extends Seeder
             $lat = $authority['lat'];
             $new_authority = Authority::create([
                 'name'              => $authority['name'],
-                'location'          => DB::raw("ST_GeomFromText('POINT({$lng} {$lat})', 4326)"),
+                'location'          => DB::raw("ST_GeomFromText('POINT({$lat} {$lng})', 4326)"),
                 'authority_type_id' => $authority['authority_type_id'],
             ]);
 
