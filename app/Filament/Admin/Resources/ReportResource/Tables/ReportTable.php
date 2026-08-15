@@ -53,6 +53,17 @@ class ReportTable
                     ->falseColor('danger')
                     ->state(fn ($record) => $record->news?->post !== null),
 
+                Tables\Columns\TextColumn::make('news.authority')
+                    ->label('Authorities')
+                    ->formatStateUsing(function ($record) {
+                        if ($record->news && $record->news->authority && $record->news->authority->isNotEmpty()) {
+                            return $record->news->authority->pluck('name')->join(', ');
+                        }
+                        return 'no authority';
+                    })
+                    ->wrap(),
+                    
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
