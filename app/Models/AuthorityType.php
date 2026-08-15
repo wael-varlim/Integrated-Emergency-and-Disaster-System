@@ -16,4 +16,9 @@ class AuthorityType extends Model
     {
         return $this->hasMany(Authority::class);
     }
+
+    public function newsType()
+    {
+        return $this->belongsToMany(NewsType::class, 'authority_types_news_types');
+    }
 }

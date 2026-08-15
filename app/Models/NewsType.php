@@ -24,6 +24,7 @@ class NewsType extends Model
     {
         return $this->hasMany(NewsTypeTranslation::class);
     }
+
     public function arabicTranslation()
     {
         return $this->hasOne(NewsTypeTranslation::class)
@@ -35,6 +36,10 @@ class NewsType extends Model
         return $this->hasOne(AwarenessArticle::class);
     }
 
+    public function authorityType()
+    {
+        return $this->belongsToMany(AuthorityType::class, 'authority_types_news_types');
+    }
 
     //current trnaslation relation
     public function currentTranslation()
