@@ -79,6 +79,7 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->brandName('Emergency & Disaster System')
+            ->sidebarCollapsibleOnDesktop()
             ->globalSearch(false)
             ->font('Inter')
             ->renderHook(

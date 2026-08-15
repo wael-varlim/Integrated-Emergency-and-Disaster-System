@@ -18,7 +18,7 @@ class ReportTable
 
                 Tables\Columns\TextColumn::make('news.body')
                     ->label('News')
-                    ->limit(50)
+                    ->limit(20)
                     ->searchable()
                     ->tooltip(fn ($record) => $record->news?->body),
 
@@ -57,6 +57,7 @@ class ReportTable
                     ->label('Authorities')
                     ->badge()
                     ->color('primary')
+                    ->wrap()
                     ->state(function ($record) {
                         if ($record->news && $record->news->authority && $record->news->authority->isNotEmpty()) {
                             return $record->news->authority->pluck('name')->toArray();
@@ -65,10 +66,7 @@ class ReportTable
                     }),
                     
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->label('Reported At'),
+               
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
