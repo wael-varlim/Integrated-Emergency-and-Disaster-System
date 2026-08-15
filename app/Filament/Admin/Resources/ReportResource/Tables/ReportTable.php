@@ -42,7 +42,7 @@ class ReportTable
                         return null;
                     })
                     ->color('primary')
-                    ->searchable(['first_name', 'last_name']),
+                    ->searchable(['body']),
 
                 Tables\Columns\IconColumn::make('news.post')
                     ->label('Has Post')

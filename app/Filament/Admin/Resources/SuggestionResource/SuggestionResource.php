@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\SuggestionResource;
 
 use App\Filament\Admin\Resources\SuggestionResource\Pages;
 use App\Filament\Admin\Resources\SuggestionResource\Schemas\SuggestionForm;
+use App\Filament\Admin\Resources\SuggestionResource\Schemas\SuggestionInfolist;
 use App\Filament\Admin\Resources\SuggestionResource\Tables\SuggestionTable;
 use App\Models\Suggestion;
 use Filament\Schemas\Schema;
@@ -30,6 +31,11 @@ class SuggestionResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return SuggestionForm::schema($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return SuggestionInfolist::schema($schema);
     }
 
     public static function table(Table $table): Table

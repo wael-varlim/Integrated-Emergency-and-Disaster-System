@@ -44,9 +44,15 @@ class AuthorityTable
 
                 Tables\Columns\TextColumn::make('news_count')
                     ->counts('news')
+                    ->label('News Count')
                     ->badge()
-                    ->color('info')
-                    ->label('News'),
+                    ->color(fn ($state): string => match (true) {
+                        $state === 0 => 'gray',
+                        $state < 5 => 'info',
+                        $state < 10 => 'success',
+                        default => 'warning',
+                    })
+                    ->formatStateUsing(fn ($state): string => $state === 0 ? 'No news' : "{$state} news"),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
