@@ -53,15 +53,16 @@ class ReportTable
                     ->falseColor('danger')
                     ->state(fn ($record) => $record->news?->post !== null),
 
-                Tables\Columns\TextColumn::make('news.authority')
+                Tables\Columns\TextColumn::make('authorities')
                     ->label('Authorities')
-                    ->formatStateUsing(function ($record) {
+                    ->badge()
+                    ->color('primary')
+                    ->state(function ($record) {
                         if ($record->news && $record->news->authority && $record->news->authority->isNotEmpty()) {
-                            return $record->news->authority->pluck('name')->join(', ');
+                            return $record->news->authority->pluck('name')->toArray();
                         }
-                        return 'no authority';
-                    })
-                    ->wrap(),
+                        return [];
+                    }),
                     
 
                 Tables\Columns\TextColumn::make('created_at')
