@@ -12,6 +12,8 @@ use App\Models\NotificationTranslations;
 use App\Models\Post;
 use App\Models\PostTranslation;
 use App\Models\Region;
+use App\Models\Media;
+use App\Models\MediaType;
 
 class CreatePost extends CreateRecord
 {
@@ -36,6 +38,9 @@ class CreatePost extends CreateRecord
             'notification_body' => $data['notification_body']['en'] ?? $data['notification_body']['ar'] ?? '',
             'notification_body_ar' => $data['notification_body']['ar'] ?? null,
             'notification_body_en' => $data['notification_body']['en'] ?? null,
+
+            // Keep new images array
+            'new_images' => $data['new_images'] ?? [],
         ];
 
         return $processedData;
@@ -96,6 +101,23 @@ class CreatePost extends CreateRecord
                 'translation'   => $data['title_en'],
                 'post_id'       => $post->id,
             ]);
+        }
+
+        // Handle image uploads
+        if (!empty($data['images']) && is_array($data['images'])) {
+            // Get or create image media type
+            $imageMediaType = MediaType::firstOrCreate(
+                ['type_name' => 'image']
+            );
+
+            foreach ($data['images'] as $imagePath) {
+                Media::create([
+                    'media_url' => $imagePath,
+                    'media_type_id' => $imageMediaType->id,
+                    'model_type' => News::class,
+                    'model_id' => $news->id,
+                ]);
+            }
         }
 
         // Get all regions

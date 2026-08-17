@@ -4,8 +4,11 @@ namespace App\Filament\Admin\Resources\PostResource\Pages;
 use App\Filament\Admin\Resources\PostResource\PostResource;
 use App\Models\News;
 use App\Models\Notification;
+use App\Models\Media;
+use App\Models\MediaType;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Storage;
 
 class EditPost extends EditRecord
 {
@@ -26,6 +29,7 @@ class EditPost extends EditRecord
         $data['news_body'] = [];
         $data['notification_title'] = [];
         $data['notification_body'] = [];
+        $data['new_images'] = [];
 
         // Load post translations
         $postTranslations = $this->record->postTranslations;
@@ -33,8 +37,8 @@ class EditPost extends EditRecord
             $data['title'][$translation->language_code] = $translation->translation;
         }
 
-        // Load news and news translations
-        $news = News::with('newsTranslations', 'address')->find($data['news_id']);
+        // Load news and news translations with media eager loading
+        $news = News::with(['newsTranslations', 'address', 'media.mediaType'])->find($data['news_id']);
         if ($news) {
             // Load news body translations
             foreach ($news->newsTranslations as $translation) {
@@ -45,6 +49,17 @@ class EditPost extends EditRecord
             if ($news->address) {
                 $data['city_id'] = $news->address->city_id;
                 $data['street'] = $news->address->street;
+            }
+
+            // Load existing images directly into the same field used for new uploads,
+            // so the FileUpload component shows them as already-uploaded files that
+            // can be removed (or left alone) alongside adding new ones.
+            $imageMediaType = MediaType::where('type_name', 'image')->first();
+            if ($imageMediaType) {
+                $data['new_images'] = $news->media()
+                    ->where('media_type_id', $imageMediaType->id)
+                    ->pluck('media_url')
+                    ->toArray();
             }
         }
 
@@ -139,6 +154,48 @@ class EditPost extends EditRecord
             
             unset($data['notification_title']);
             unset($data['notification_body']);
+        }
+
+        // Handle images: the field now contains BOTH existing and newly-uploaded
+        // paths together, since the form pre-fills it with existing images.
+        // Diff against what's in the DB: anything missing was removed by the
+        // user and should be deleted; anything not yet in the DB is a new
+        // upload and should be created.
+        if (isset($data['new_images']) && is_array($data['new_images'])) {
+            $news = $this->record->news;
+
+            if ($news) {
+                $imageMediaType = MediaType::firstOrCreate(['type_name' => 'image']);
+
+                $existingMedia = $news->media()
+                    ->where('media_type_id', $imageMediaType->id)
+                    ->get();
+                $existingPaths = $existingMedia->pluck('media_url')->toArray();
+
+                $submittedPaths = array_values($data['new_images']);
+
+                // Images removed in the UI: present in DB, absent from submission
+                $removedPaths = array_diff($existingPaths, $submittedPaths);
+                foreach ($existingMedia as $media) {
+                    if (in_array($media->media_url, $removedPaths, true)) {
+                        Storage::disk('public')->delete($media->media_url);
+                        $media->delete();
+                    }
+                }
+
+                // Newly uploaded images: present in submission, absent from DB
+                $newPaths = array_diff($submittedPaths, $existingPaths);
+                foreach ($newPaths as $imagePath) {
+                    Media::create([
+                        'media_url' => $imagePath,
+                        'media_type_id' => $imageMediaType->id,
+                        'model_type' => News::class,
+                        'model_id' => $news->id,
+                    ]);
+                }
+            }
+
+            unset($data['new_images']);
         }
 
         unset($data['city_id']);

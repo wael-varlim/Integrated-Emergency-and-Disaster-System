@@ -54,6 +54,20 @@ class PostForm
                                     ]),
                             ])
                             ->columnSpanFull(),
+
+                        Forms\Components\FileUpload::make('new_images')
+                            ->label('Images')
+                            ->image()
+                            ->multiple()
+                            ->maxFiles(5)
+                            ->maxSize(5120)
+                            ->disk('public')
+                            ->directory('post-images')
+                            ->visibility('public')
+                            ->reorderable()
+                            ->panelLayout('grid')
+                            ->helperText('Existing images appear below and can be removed. Add up to 5 total. Max size: 5MB per image.')
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('Notification Details')

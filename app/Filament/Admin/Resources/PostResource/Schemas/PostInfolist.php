@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\PostResource\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -98,6 +99,33 @@ class PostInfolist
                             })
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Post Images')
+                    ->schema([
+                        ImageEntry::make('images')
+                            ->label('')
+                            ->state(function ($record) {
+                                if (!$record || !$record->news) {
+                                    return [];
+                                }
+                                return $record->news->media()
+                                    ->whereHas('mediaType', fn($q) => $q->where('type_name', 'image'))
+                                    ->get()
+                                    ->map(fn($media) => $media->full_url)
+                                    ->toArray();
+                            })
+                            ->size(200)
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(function ($record) {
+                        if (!$record || !$record->news) {
+                            return false;
+                        }
+                        return $record->news->media()
+                            ->whereHas('mediaType', fn($q) => $q->where('type_name', 'image'))
+                            ->exists();
+                    })
+                    ->columnSpanFull(),
 
                 Section::make('Location')
                     ->schema([

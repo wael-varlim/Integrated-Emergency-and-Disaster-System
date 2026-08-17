@@ -16,6 +16,22 @@ class PostTable
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('images')
+                    ->label('Images')
+                    ->circular()
+                    ->stacked()
+                    ->limit(3)
+                    ->getStateUsing(function ($record) {
+                        if (!$record->news) {
+                            return [];
+                        }
+                        
+                        return $record->news->media()
+                            ->whereHas('mediaType', fn($q) => $q->where('type_name', 'image'))
+                            ->get()
+                            ->map(fn($media) => $media->full_url)
+                            ->toArray();
+                    }),
                 Tables\Columns\TextColumn::make('by_admin')
                     ->label('Created by Admin')
                     ->badge()
