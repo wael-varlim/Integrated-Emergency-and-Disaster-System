@@ -22,6 +22,28 @@ class EditPost extends EditRecord
         ];
     }
 
+    /**
+     * Normalize a stored media_url into a bare path relative to the 'public'
+     * disk root (e.g. "post-images/xxx.jpg"), regardless of whether it was
+     * historically saved as a full URL, "/storage/...", or "storage/...".
+     * The FileUpload component only knows how to hydrate/preview bare
+     * relative paths — anything else leaves it stuck on "loading...".
+     */
+    private function normalizeImagePath(string $url): string
+    {
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            $url = parse_url($url, PHP_URL_PATH) ?? $url;
+        }
+
+        $url = ltrim($url, '/');
+
+        if (str_starts_with($url, 'storage/')) {
+            $url = substr($url, strlen('storage/'));
+        }
+
+        return $url;
+    }
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         // Initialize arrays
@@ -59,6 +81,9 @@ class EditPost extends EditRecord
                 $data['new_images'] = $news->media()
                     ->where('media_type_id', $imageMediaType->id)
                     ->pluck('media_url')
+                    ->map(fn ($url) => $this->normalizeImagePath($url))
+                    ->filter(fn ($path) => Storage::disk('public')->exists($path))
+                    ->values()
                     ->toArray();
             }
         }
@@ -170,14 +195,21 @@ class EditPost extends EditRecord
                 $existingMedia = $news->media()
                     ->where('media_type_id', $imageMediaType->id)
                     ->get();
-                $existingPaths = $existingMedia->pluck('media_url')->toArray();
+
+                // Compare using the same normalized form used to fill the form,
+                // regardless of how each row happens to be stored in the DB.
+                $existingByNormalizedPath = $existingMedia->keyBy(
+                    fn ($media) => $this->normalizeImagePath($media->media_url)
+                );
+                $existingPaths = $existingByNormalizedPath->keys()->toArray();
 
                 $submittedPaths = array_values($data['new_images']);
 
                 // Images removed in the UI: present in DB, absent from submission
                 $removedPaths = array_diff($existingPaths, $submittedPaths);
-                foreach ($existingMedia as $media) {
-                    if (in_array($media->media_url, $removedPaths, true)) {
+                foreach ($removedPaths as $path) {
+                    $media = $existingByNormalizedPath->get($path);
+                    if ($media) {
                         Storage::disk('public')->delete($media->media_url);
                         $media->delete();
                     }
