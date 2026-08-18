@@ -46,14 +46,17 @@ class FindBestAuthority
             $coordinates->longitude
         );
 
-        $report->news?->authority()->syncWithoutDetaching(
-            $nearestAuthorities->pluck('id')
+        if ($nearestAuthorities != null)
+        {
+            $report->news?->authority()->syncWithoutDetaching(
+                $nearestAuthorities->pluck('id')
             );
-
-        Log::info('Matched nearest authorities', [
-            'report_id' => $report->id,
-            'authorities' => $nearestAuthorities->pluck('id', 'authority_type_id'),
-        ]);
+                
+            Log::info('Matched nearest authorities', [
+                'report_id' => $report->id,
+                'authorities' => $nearestAuthorities->pluck('id', 'authority_type_id'),
+            ]);
+        }
 
 
     }

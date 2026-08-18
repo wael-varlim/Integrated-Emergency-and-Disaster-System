@@ -15,8 +15,13 @@ class AuthorityService
         })->get();
     }
 
-    public function findNearestAuthorities(Collection $authorityTypes, float $latitude, float $longitude): Collection
+    public function findNearestAuthorities(?Collection $authorityTypes, float $latitude, float $longitude)
     {
+        if($authorityTypes == null)
+        {
+            return null;
+        }
+        
         $nearestAuthorities = collect();
         $point = "POINT({$latitude} {$longitude})";
 

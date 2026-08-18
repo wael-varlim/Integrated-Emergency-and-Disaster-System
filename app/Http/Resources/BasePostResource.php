@@ -50,6 +50,10 @@ class BasePostResource extends JsonResource
             return $url;
         }
         
+        if (str_starts_with($url, '/storage')) {
+            return asset('' . $url);
+        }
+
         return asset('storage/' . $url);
     }
 
