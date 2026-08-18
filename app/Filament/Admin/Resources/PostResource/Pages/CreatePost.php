@@ -104,13 +104,13 @@ class CreatePost extends CreateRecord
         }
 
         // Handle image uploads
-        if (!empty($data['images']) && is_array($data['images'])) {
+        if (!empty($data['new_images']) && is_array($data['new_images'])) {
             // Get or create image media type
             $imageMediaType = MediaType::firstOrCreate(
                 ['type_name' => 'image']
             );
 
-            foreach ($data['images'] as $imagePath) {
+            foreach ($data['new_images'] as $imagePath) {
                 Media::create([
                     'media_url' => $imagePath,
                     'media_type_id' => $imageMediaType->id,
